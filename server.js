@@ -1,3 +1,71 @@
+const express = require('express');
+let bodyParser = require('body-parser')
+let path = require("path");
+
+const app = express();
+
+
+app.use(express.static('assets'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set('view engine', 'jade');
+app.get('/', (req, res) => {
+  console.log(req.url);
+  // res.sendFile(path.join(__dirname + '/index.html'));
+   res.render('index', {className: "ddd"});
+});
+
+app.get('/assets/*', (req, res) => {
+   res.sendFile(path.join(__dirname + req.path));
+});
+
+app.post('/', (req, res) => {
+  console.log(req.body.className);
+  let name = req.body.className.toString();
+  res.send({newColor: name});
+
+});
+
+app.post('/registration', (req, res) => {
+
+  console.log(req.body.login);
+  console.log(req.body.password);
+  res.render('index');
+
+});
+
+const server = app.listen(8080, () => {
+   const host = server.address().address
+   const port = server.address().port
+   console.log(`host ${host}, port ${port}`);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
@@ -72,3 +140,5 @@ http.createServer((req, res) => {
 }).listen(8080);
 
 console.log(`Server listening on port 8080`);
+
+*/

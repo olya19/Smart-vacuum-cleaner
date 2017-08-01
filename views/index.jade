@@ -1,0 +1,23 @@
+doctype html
+html(lang="en")
+  head
+    title Vacuum cleaner
+    link(rel="stylesheet", href="assets/css/reset.css")
+    link(rel="stylesheet", href="assets/css/main.css")
+    script(src="assets/js/main.js")
+  body
+    div(class="content")
+      div(class="cleaner", id="cleaner")
+      aside(class="menu")
+        form(id="registration" method="POST" action="registration")
+          input(type="text" placeholder="login" name="login")
+          input(type="password" valur="password" name="password")
+          input(type="submit")
+        h2 Menu
+        form(method="POST" action="/")
+          select(id="colors")
+            option(value="") I don't want to change it
+            option(value="red") Red
+            option(value="blue") Blue
+            option(value="green") Green
+          input(type="button", value="send", id="send")
