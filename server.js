@@ -57,11 +57,17 @@ fs.readFile('db/users.json', 'utf8', function (err, data) {
   obj = JSON.parse(data);
   console.log(obj);
 });
-
+let isUserExist = false;
 for (let i = 0; i < obj.length; i++){
   if (obj[i].login === newUser.login) {
-    break;
+    isUserExist = true;
   }
+}
+
+if(isUserExist){
+  //change state
+} else {
+  //add user to db
 }
 
 });
