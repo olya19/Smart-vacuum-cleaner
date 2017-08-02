@@ -1,18 +1,20 @@
 const express = require('express');
 let bodyParser = require('body-parser')
-let path = require("path");
+let path = require('path');
+let router = express.Router();
+let fs = require('fs');
 
 const app = express();
 
 
 app.use(express.static('assets'));
+app.use(express.static('db'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'jade');
 app.get('/', (req, res) => {
   console.log(req.url);
-  // res.sendFile(path.join(__dirname + '/index.html'));
    res.render('index', {className: "ddd"});
 });
 
@@ -20,18 +22,47 @@ app.get('/assets/*', (req, res) => {
    res.sendFile(path.join(__dirname + req.path));
 });
 
-app.post('/', (req, res) => {
-  console.log(req.body.className);
-  let name = req.body.className.toString();
-  res.send({newColor: name});
+app.post('/change-color', (req, res) => {
+  console.log(req.body.colorName);
+  let color = req.body.colorName.toString();
+  let className;
 
+  switch (color) {
+      case "red": className = 'red-cleaner'; break;
+      case "blue": className = 'blue-cleaner'; break;
+      case "green": className = 'green-cleaner'; break;
+      case "pink": className = 'pink-cleaner'; break;
+      case "purple": className = 'purple-cleaner'; break;
+      case "gold": className = 'gold-cleaner'; break;
+      case "turquoise": className = 'turquoise-cleaner'; break;
+  }
+
+  res.send({newDiv: getNewDiv(className)});
 });
 
 app.post('/registration', (req, res) => {
 
-  console.log(req.body.login);
-  console.log(req.body.password);
-  res.render('index');
+let newUser = {
+  login: req.body._login,
+  password: req.body._password,
+  cleanerState: req.body._cleanerState,
+  cleanerColor: req.body._cleanerColor
+}
+
+console.log(newUser);
+
+let obj;
+fs.readFile('db/users.json', 'utf8', function (err, data) {
+  if (err) throw err;
+  obj = JSON.parse(data);
+  console.log(obj);
+});
+
+for (let i = 0; i < obj.length; i++){
+  if (obj[i].login === newUser.login) {
+    break;
+  }
+}
 
 });
 
@@ -41,104 +72,6 @@ const server = app.listen(8080, () => {
    console.log(`host ${host}, port ${port}`);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-const http = require('http');
-const url = require('url');
-const fs = require('fs');
-const path = require('path');
-
-
-
-function onGetRequest(req, res){
-  const parsedUrl = url.parse(req.url);
-  // extract URL path
-  let pathname = `.${parsedUrl.pathname}`;
-  console.log(pathname  + ' pathname');
-  // based on the URL path, extract the file extention. e.g. .js, .doc, ...
-  let ext = path.parse(pathname).ext;
-  console.log(ext + ' ext');
-  // maps file extention to MIME typere
-  const MIME_TYPE = {
-    '.ico': 'image/x-icon',
-    '.html': 'text/html',
-    '.js': 'text/javascript',
-    '.json': 'application/json',
-    '.css': 'text/css',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.wav': 'audio/wav',
-    '.mp3': 'audio/mpeg',
-    '.svg': 'image/svg+xml',
-    '.pdf': 'application/pdf',
-    '.doc': 'application/msword'
-  };
-
-  fs.exists(pathname, (exist) => {
-    if(!exist) {
-      // if the file is not found, return 404
-      res.statusCode = 404;
-      res.end(`File ${pathname} not found!`);
-      return;
-    }
-
-    // if is a directory search for index file matching the extention
-    if (fs.statSync(pathname).isDirectory()) {
-      pathname += 'index.html';
-      console.log(pathname);
-      ext = '.html';
-    }
-    // read file from file system
-    fs.readFile(pathname, (err, data) => {
-      if(err){
-        res.statusCode = 500;
-        res.end(`Error getting the file: ${err}.`);
-      } else {
-        // if the file is found, set Content-type and send data
-        console.log(this);
-        res.setHeader('Content-type', MIME_TYPE[ext] || 'text/plain' );
-        res.end(data);
-      }
-    });
-  });
-
+function getNewDiv(className){
+  return   `<div class="cleaner ${className}" id="cleaner"></div>`;
 }
-
-http.createServer((req, res) => {
-  console.log(`${req.method} ${req.url}`);
-  // parse URL
-  switch (req.method) {
-    case 'GET': onGetRequest(req, res);
-      break;
-    default: console.log('Can not !');
-
-  }
-
-}).listen(8080);
-
-console.log(`Server listening on port 8080`);
-
-*/

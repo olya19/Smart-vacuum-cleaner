@@ -1,0 +1,7 @@
+[
+{"login": "qwe", "password": "123", "cleanerState": true, "cleanerColor":"red"},
+
+{"login": "abc", "password": "123", "cleanerState": true, "cleanerColor":"pink"},
+
+{"login": "lkj", "password": "123", "cleanerState": false, "cleanerColor":"gold"}
+]
