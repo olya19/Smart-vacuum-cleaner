@@ -6,18 +6,22 @@ html(lang="en")
     link(rel="stylesheet", href="assets/css/main.css")
     script(src="assets/js/main.js")
   body
-    div(class="content")
+    div(class="content" id="content")
       div(class="cleaner", id="cleaner")
-      aside(class="menu")
-        form(id="registration" method="POST" action="registration")
-          input(type="text" placeholder="login" name="login")
-          input(type="password" valur="password" name="password")
-          input(type="submit")
+      aside(class="menu" id="menu")
         h2 Menu
+        div.on-off-button-area
+          div.on-off-button.cleaner-on
+          span OFF
         form(method="POST" action="/")
           select(id="colors")
-            option(value="") I don't want to change it
+            option(value="empty") I don't want to change it
             option(value="red") Red
             option(value="blue") Blue
+            option(value="gold") Gold
+            option(value="pink") Pink
+            option(value="purple") Purple
             option(value="green") Green
-          input(type="button", value="send", id="send")
+            option(value="turquoise") Turtuoise
+        div
+          p To save your options #[a(href="#" id="register") register ] now
