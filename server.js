@@ -2,6 +2,7 @@ const express = require('express');
 let bodyParser = require('body-parser')
 let path = require('path');
 let router = express.Router();
+let url = require('url');
 let fs = require('fs');
 
 const app = express();
@@ -14,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'jade');
 app.get('/', (req, res) => {
-  console.log(req.url);
+  console.log(`${req.method} ${res.statusCode} ${req.url}`); ///added method & StatusCode
    res.render('index', {className: "ddd"});
 });
 
@@ -67,7 +68,11 @@ for (let i = 0; i < obj.length; i++){
 if(isUserExist){
   //change state
 } else {
-  //add user to db
+	fs.appendFile('db/users.json', obj.push(JSON.stringify(newUser)), function (err) {
+  if (err) throw err;
+  console.log('New user was added!'); //add user to db
+});
+  
 }
 
 });
