@@ -92,7 +92,7 @@ register.addEventListener('click', (event) => {
     let user = {login: document.getElementById('login').value};
     console.log(user);
 
-    fetch('/registration', {
+    fetch('/login', {
       headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'

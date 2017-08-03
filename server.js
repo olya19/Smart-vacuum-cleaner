@@ -41,7 +41,7 @@ app.post('/change-color', (req, res) => {
   res.send({newDiv: getNewDiv(className)});
 });
 
-app.post('/registration', (req, res) => {
+app.post('/login', (req, res) => {
 
 let newUser = {
   login: req.body.login,
@@ -51,27 +51,26 @@ let newUser = {
 
 console.log(newUser);
 
-let usersArray = readJSONFile('db/users.json');
-console.log(usersArray);
 
-let indexUser = -1;
-let userFromDB = usersArray.find((element, index) => {
-    if (element.login === newUser.login){
-      indexUser = index;
-      return true;
+fs.readFile('db/users.json', 'utf8', (err, data) => {
+  let usersArray = JSON.parse(data);
+  let indexUser = -1;
+  let userFromDB = usersArray.find((element, index) => {
+      if (element.login === newUser.login){
+        indexUser = index;
+        return true;
+    }
+    });
+
+  if(indexUser === -1){
+    usersArray.push(newUser);
+    rewriteJSONFile(usersArray, 'db/users.json');
+    res.send({user: newUser});
+  } else {
+    console.log(usersArray[indexUser]);
+    res.send({user:usersArray[indexUser]});
   }
-  });
-
-if(indexUser === -1){
-  //add user to db
-  usersArray.push(newUser);
-  rewriteJSONFile(usersArray, 'db/users.json');
-  res.send({user: newUser});
-  //set properies
-} else {
-  console.log(usersArray[indexUser]);
-  res.send({user:usersArray[indexUser]});
-}
+})
 
 });
 
@@ -87,7 +86,7 @@ function getNewDiv(className){
 
 function readJSONFile(filePath){
 
-  let dataFromFile = fs.readFileSync(filePath, 'utf8');
+  let dataFromFile = fs.readFile(filePath, 'utf8');
   return JSON.parse(dataFromFile);
 
 }
