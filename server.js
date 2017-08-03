@@ -2,7 +2,6 @@ const express = require('express');
 let bodyParser = require('body-parser')
 let path = require('path');
 let router = express.Router();
-let url = require('url');
 let fs = require('fs');
 
 const app = express();
@@ -36,6 +35,7 @@ app.post('/change-color', (req, res) => {
       case "purple": className = 'purple-cleaner'; break;
       case "gold": className = 'gold-cleaner'; break;
       case "turquoise": className = 'turquoise-cleaner'; break;
+      case "empty": className = ''; break;
   }
 
   res.send({newDiv: getNewDiv(className)});
@@ -44,35 +44,33 @@ app.post('/change-color', (req, res) => {
 app.post('/registration', (req, res) => {
 
 let newUser = {
-  login: req.body._login,
-  password: req.body._password,
-  cleanerState: req.body._cleanerState,
-  cleanerColor: req.body._cleanerColor
-}
+  login: req.body.login,
+  cleanerState: false,
+  cleanerColor: ""
+};
 
 console.log(newUser);
 
-let obj;
-fs.readFile('db/users.json', 'utf8', function (err, data) {
-  if (err) throw err;
-  obj = JSON.parse(data);
-  console.log(obj);
-});
-let isUserExist = false;
-for (let i = 0; i < obj.length; i++){
-  if (obj[i].login === newUser.login) {
-    isUserExist = true;
-  }
-}
+let usersArray = readJSONFile('db/users.json');
+console.log(usersArray);
 
-if(isUserExist){
-  //change state
-} else {
-	fs.appendFile('db/users.json', obj.push(JSON.stringify(newUser)), function (err) {
-  if (err) throw err;
-  console.log('New user was added!'); //add user to db
-});
+let indexUser = -1;
+let userFromDB = usersArray.find((element, index) => {
+    if (element.login === newUser.login){
+      indexUser = index;
+      return true;
+  }
+  });
   
+if(indexUser === -1){
+  //add user to db
+  usersArray.push(newUser);
+  rewriteJSONFile(usersArray, 'db/users.json');
+  res.send({user: newUser});
+  //set properies
+} else {
+  console.log(usersArray[indexUser]);
+  res.send({user:usersArray[indexUser]});
 }
 
 });
@@ -85,4 +83,18 @@ const server = app.listen(8080, () => {
 
 function getNewDiv(className){
   return   `<div class="cleaner ${className}" id="cleaner"></div>`;
+}
+
+function readJSONFile(filePath){
+
+  let dataFromFile = fs.readFileSync(filePath, 'utf8');
+  return JSON.parse(dataFromFile);
+
+}
+
+function rewriteJSONFile(object, filePath){
+  fs.writeFile(filePath, JSON.stringify(object), (err) => {
+    if (err) throw err;
+    console.log('success save');
+  });
 }
