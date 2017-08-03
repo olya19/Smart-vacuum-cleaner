@@ -33,7 +33,6 @@ window.addEventListener('load', () => {
         }
       }
 
-    if (color !== 'empty'){
       fetch('/change-color', {
         headers: {
         'Accept': 'application/json',
@@ -50,7 +49,7 @@ window.addEventListener('load', () => {
         contentDiv.insertBefore(div, document.getElementById('menu'));
 
       });
-    }
+
 
   }
 function createNode(htmlStr) {
@@ -72,10 +71,9 @@ register.addEventListener('click', (event) => {
 
   let htmlStr = `<div class="modal-form">
     <form action="" class="form-reg">
-      <label for="">REGISTER NOW</label>
+      <label for="">LOG IN</label>
       <input type="text" placeholder="login" id="login">
-      <input type="password" name="" value="" placeholder="password" id="password">
-      <input type="button" value="reg" id="reg">
+      <input type="button" value="Log in" id="btnLogIn">
       <button class="cancel" id="cancel">[ Cancel ]</button>
     </form>
   </div>`;
@@ -86,12 +84,12 @@ register.addEventListener('click', (event) => {
 
   let cancelButton = document.getElementById('cancel');
   cancelButton.addEventListener('click', () => {
-    content.removeChild(modalForm);
+    removeLastChildFromDOM('content');
   });
 
-  let regButton = document.getElementById('reg');
-  regButton.addEventListener('click', () => {
-    let user = new User(document.getElementById('login').value, document.getElementById('password').value);
+  let logInButton = document.getElementById('btnLogIn');
+  logInButton.addEventListener('click', () => {
+    let user = {login: document.getElementById('login').value};
     console.log(user);
 
     fetch('/registration', {
@@ -104,10 +102,26 @@ register.addEventListener('click', (event) => {
       body: JSON.stringify(user)
     }).then( (res) => {
       console.log(res);
+      return res.json();
+    }).then((json) => {
+      removeLastChildFromDOM('content');
+      let classNameString = document.getElementById('cleaner').className;
+      let classNameArray = classNameString.split(' ');
+      if (classNameArray.length > 1) {
+        classNameArray[1] = json.user.cleanerColor;
+      document.getElementById('cleaner').className = classNameArray.join(' ');
+    } else {
+      document.getElementById('cleaner').className += ` ${json.user.cleanerColor}`;
+    }
+
     });
 
   })
 
 });
+
+function removeLastChildFromDOM(idDOMElement){
+  document.getElementById(idDOMElement).removeChild(document.getElementById(idDOMElement).lastChild);
+}
 
 })

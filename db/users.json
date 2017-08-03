@@ -1,7 +1,1 @@
-[
-{"login": "qwe", "password": "123", "cleanerState": true, "cleanerColor":"red"},
-
-{"login": "abc", "password": "123", "cleanerState": true, "cleanerColor":"pink"},
-
-{"login": "lkj", "password": "123", "cleanerState": false, "cleanerColor":"gold"}
-]
+[{"login":"qwe","cleanerState":true,"cleanerColor":"red-cleaner"},{"login":"abc","cleanerState":true,"cleanerColor":"pink-cleaner"},{"login":"lkj","cleanerState":false,"cleanerColor":"gold-cleaner"},{"login":"uuu","cleanerState":false,"cleanerColor":""},{"login":"xcvbggtrff","cleanerState":false,"cleanerColor":""},{"login":"qwertyuioooop","cleanerState":false,"cleanerColor":""},{"login":"111","cleanerState":false,"cleanerColor":""},{"login":"","cleanerState":false,"cleanerColor":""},{"login":"adc","cleanerState":false,"cleanerColor":""}]
