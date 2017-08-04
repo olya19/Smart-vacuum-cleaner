@@ -1,6 +1,6 @@
 window.addEventListener('load', () => {
 
-  let greetingId = document.getElementById('menu').firstChild.id;
+  let greetingId = getEl('menu').firstChild.id;
   if (greetingId !== 'undefined'){
     //console.log(document.getElementById('menu').firstChild.id);
     showHideGreeting('block', greetingId);
@@ -22,7 +22,7 @@ window.addEventListener('load', () => {
           colors[i].selected = true;
         }
       }
-      document.getElementById('cleaner').className += ` ${json.color === 'empty'? '' : json.color+'-cleaner'}`;
+      getEl('cleaner').className += ` ${json.color === 'empty'? '' : json.color+'-cleaner'}`;
       showHideLoginRegister('none');
     });
   }
@@ -50,7 +50,7 @@ window.addEventListener('load', () => {
     }
 
 
-    var colors = document.getElementById('colors');
+    var colors = getEl('colors');
     colors.onchange = () => {
       let color;
       for (var i = 0; i < colors.length; i++){
@@ -65,7 +65,7 @@ window.addEventListener('load', () => {
         'Content-Type': 'application/json'
         },
         method : 'POST',
-        body: JSON.stringify({colorName:color, login:document.getElementById('menu').firstChild.id})
+        body: JSON.stringify({colorName:color, login:getEl('menu').firstChild.id})
       }).then( (res) => {
         return res.json();
       }).then( (json) => {
@@ -84,8 +84,8 @@ function createNode(htmlStr) {
   return frag;
 }
 
-let login = document.getElementById("log-in");
-let register = document.getElementById("register");
+let login = getEl("log-in");
+let register = getEl("register");
 
 register.addEventListener('click', (event) => {
   event.preventDefault();
@@ -102,16 +102,16 @@ register.addEventListener('click', (event) => {
 
   let modalForm = createNode(htmlStr);
   console.log(modalForm);
-  let content = document.getElementById('content').appendChild(modalForm);
+  let content = getEl('content').appendChild(modalForm);
 
-  let cancelButton = document.getElementById('cancel');
+  let cancelButton = getEl('cancel');
   cancelButton.addEventListener('click', () => {
     removeLastChildFromDOM('content');
   });
 
-  let logInButton = document.getElementById('btnLogIn');
+  let logInButton = getEl('btnLogIn');
   logInButton.addEventListener('click', () => {
-    let user = {login: document.getElementById('login').value};
+    let user = {login: getEl('login').value};
 
     console.log(user);
 
@@ -129,16 +129,16 @@ register.addEventListener('click', (event) => {
     }).then((json) => {
       removeLastChildFromDOM('content');
       showHideGreeting('block', json.user.login);
-      document.getElementById('menu').firstChild.id = json.user.login;
+      getEl('menu').firstChild.id = json.user.login;
       showHideLoginRegister('none');
 
-      let classNameString = document.getElementById('cleaner').className;
+      let classNameString = getEl('cleaner').className;
       let classNameArray = classNameString.split(' ');
       if (classNameArray.length > 1) {
         classNameArray[1] = json.user.cleanerColor;
-        document.getElementById('cleaner').className = classNameArray.join(' ');
+        getEl('cleaner').className = classNameArray.join(' ');
       } else {
-        document.getElementById('cleaner').className += ` ${json.user.cleanerColor}`;
+        getEl('cleaner').className += ` ${json.user.cleanerColor}`;
     }
 
     });
@@ -148,28 +148,28 @@ register.addEventListener('click', (event) => {
 
 });
 
-let logOutButton = document.getElementById('logOut');
+let logOutButton = getEl('logOut');
 logOutButton.addEventListener('click', (event) =>{
   event.preventDefault();
   showHideGreeting('none');
   showHideLoginRegister('block');
   //document.getElementById('cleaner').className = 'cleaner';
-  document.getElementById('colors')[0].selected = true;
-  document.getElementById('cleaner').className = 'cleaner';
-  document.getElementById('menu').firstChild.id = '';
+  getEl('colors')[0].selected = true;
+  getEl('cleaner').className = 'cleaner';
+  getEl('menu').firstChild.id = '';
 });
 
 function removeLastChildFromDOM(idDOMElement){
-  document.getElementById(idDOMElement).removeChild(document.getElementById(idDOMElement).lastChild);
+  getEl(idDOMElement).removeChild(getEl(idDOMElement).lastChild);
 }
 
-let newRoom = document.getElementById('newRoom');    //
-let addRoom = document.getElementById('addRoom');
+let newRoom = getEl('newRoom');    //
+let addRoom = getEl('addRoom');
 addRoom.addEventListener('click', () => {
 	newRoom.style.visibility = 'visible';
 	console.log('add new room');
 });
-let closeAddRoom = document.getElementById('close');
+let closeAddRoom = getEl('close');
 closeAddRoom.addEventListener('click', () => {
 	newRoom.style.visibility = 'hidden';
     });
@@ -180,18 +180,27 @@ function showHideGreeting(displayState, login){
     greetingDiv.firstChild.innerHTML = `Hello, ${login}`;
   }
   greetingDiv.style.display = displayState;
+  showHideRooms(displayState);
+}
+
+function showHideRooms(displayState){
+  getEl('rooms').style.display = displayState;
 }
 
 function showHideLoginRegister(displayState){
-  let loginRegisterDiv = document.getElementById('loginRegister');
+  let loginRegisterDiv = getEl('loginRegister');
   loginRegister.style.display = displayState;
 }
 
 function rewriteDiv(newDiv){
   let div = createNode(newDiv);
-  let contentDiv = document.getElementById('content');
-  contentDiv.removeChild(document.getElementById('cleaner'));
-  contentDiv.insertBefore(div, document.getElementById('menu'));
+  let contentDiv = getEl('content');
+  contentDiv.removeChild(getEl('cleaner'));
+  contentDiv.insertBefore(div, getEl('menu'));
+}
+
+function getEl(id){
+  return document.getElementById(id);
 }
 
 

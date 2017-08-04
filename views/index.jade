@@ -24,14 +24,7 @@ html(lang="en")
           h3 Hello, 
           a(href="#" id="logOut") Log out
         h2 Menu
-<<<<<<< HEAD
         form(method="POST" action="/")
-=======
-        div.on-off-button-area
-          div.on-off-button.cleaner-on
-          span OFF
-        form(method="POST" action="/change-color")
->>>>>>> 021bdb8fb2eb8b4fd5a9c161832e4a852723daf9
           select(id="colors")
             option(value="empty") I don't want to change it
             option(value="red") Red
@@ -43,8 +36,8 @@ html(lang="en")
             option(value="turquoise") Turtuoise
         div(id="loginRegister")
           p To save your options #[a(href="#" id="register") register/login ] now
-          div.rooms
-            h2 Your rooms:
-            p You haven't added any room yet.
-            p Please press the button below to add new room
-            input(type="button" id="addRoom" value="Add new room")
+        div.rooms#rooms
+          h2 Your rooms:
+          p You haven't added any room yet.
+          p Please press the button below to add new room
+          input(type="button" id="addRoom" value="Add new room")
