@@ -8,12 +8,30 @@ html(lang="en")
   body
     div(class="content" id="content")
       div(class="cleaner", id="cleaner")
+        div(class="newRoom", id="newRoom")
+          form(method="POST" action="/" id="newRoomForm")
+            p(id="close") x
+            h2 Add room
+            label Name
+              input(type="text" placeholder="Kitchen" id="roomName")
+            br
+            label Square
+            input(type="number" placeholder="20.5" min="1" id="roomSquare" step="0.1")
+            input(type="button" value="Save" id="saveRoom") 
+            input(type="reset" value="Reset") 
       aside(class="menu" id="menu")
         div(class="greeting" id="#{locals.login}")
           h3 Hello, 
           a(href="#" id="logOut") Log out
         h2 Menu
+<<<<<<< HEAD
         form(method="POST" action="/")
+=======
+        div.on-off-button-area
+          div.on-off-button.cleaner-on
+          span OFF
+        form(method="POST" action="/change-color")
+>>>>>>> 021bdb8fb2eb8b4fd5a9c161832e4a852723daf9
           select(id="colors")
             option(value="empty") I don't want to change it
             option(value="red") Red
@@ -25,3 +43,8 @@ html(lang="en")
             option(value="turquoise") Turtuoise
         div(id="loginRegister")
           p To save your options #[a(href="#" id="register") register/login ] now
+          div.rooms
+            h2 Your rooms:
+            p You haven't added any room yet.
+            p Please press the button below to add new room
+            input(type="button" id="addRoom" value="Add new room")

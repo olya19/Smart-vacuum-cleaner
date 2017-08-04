@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'jade');
 
 app.get('/', (req, res) => {
-  console.log(req.url);
+
+  console.log(`${req.method} ${res.statusCode} ${req.url}`); //added method & StatusCode
   fs.readFile('db/lastUser.json', 'utf8', (err, data) => {
     let lastUser = JSON.parse(data);
     res.render('index', {login: lastUser.login});
