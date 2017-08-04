@@ -1,6 +1,32 @@
 window.addEventListener('load', () => {
 
-  window.sessionStorage.setItem('userLogin', '');
+  let greetingId = document.getElementById('menu').firstChild.id;
+  if (greetingId !== 'undefined'){
+    //console.log(document.getElementById('menu').firstChild.id);
+    showHideGreeting('block', greetingId);
+    fetch('/setUserProperties', {
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      },
+      method : 'POST',
+      body: JSON.stringify({login:greetingId})
+    }).then( (res) => {
+      return res.json();
+    }).then( (json) => {
+      //rewriteDiv(json.newDiv);
+      let colors = document.getElementById('colors');
+      console.log(colors);
+      for (var i = 0; i < colors.length; i++){
+        if (colors[i].value === json.color) {
+          colors[i].selected = true;
+        }
+      }
+      document.getElementById('cleaner').className += ` ${json.color === 'empty'? '' : json.color+'-cleaner'}`;
+      showHideLoginRegister('none');
+    });
+  }
+
 
   class User{
 
@@ -39,15 +65,11 @@ window.addEventListener('load', () => {
         'Content-Type': 'application/json'
         },
         method : 'POST',
-        body: JSON.stringify({colorName:color})
+        body: JSON.stringify({colorName:color, login:document.getElementById('menu').firstChild.id})
       }).then( (res) => {
         return res.json();
       }).then( (json) => {
-        let div = createNode(json.newDiv);
-        let contentDiv = document.getElementById('content');
-        contentDiv.removeChild(document.getElementById('cleaner'));
-        contentDiv.insertBefore(div, document.getElementById('menu'));
-
+        rewriteDiv(json.newDiv);
       });
 
 
@@ -90,6 +112,7 @@ register.addEventListener('click', (event) => {
   let logInButton = document.getElementById('btnLogIn');
   logInButton.addEventListener('click', () => {
     let user = {login: document.getElementById('login').value};
+
     console.log(user);
 
     fetch('/login', {
@@ -105,23 +128,60 @@ register.addEventListener('click', (event) => {
       return res.json();
     }).then((json) => {
       removeLastChildFromDOM('content');
+      showHideGreeting('block', json.user.login);
+      document.getElementById('menu').firstChild.id = json.user.login;
+      showHideLoginRegister('none');
+
       let classNameString = document.getElementById('cleaner').className;
       let classNameArray = classNameString.split(' ');
       if (classNameArray.length > 1) {
         classNameArray[1] = json.user.cleanerColor;
-      document.getElementById('cleaner').className = classNameArray.join(' ');
-    } else {
-      document.getElementById('cleaner').className += ` ${json.user.cleanerColor}`;
+        document.getElementById('cleaner').className = classNameArray.join(' ');
+      } else {
+        document.getElementById('cleaner').className += ` ${json.user.cleanerColor}`;
     }
 
     });
+
 
   })
 
 });
 
+let logOutButton = document.getElementById('logOut');
+logOutButton.addEventListener('click', (event) =>{
+  event.preventDefault();
+  showHideGreeting('none');
+  showHideLoginRegister('block');
+  //document.getElementById('cleaner').className = 'cleaner';
+  document.getElementById('colors')[0].selected = true;
+  document.getElementById('cleaner').className = 'cleaner';
+  document.getElementById('menu').firstChild.id = '';
+});
+
 function removeLastChildFromDOM(idDOMElement){
   document.getElementById(idDOMElement).removeChild(document.getElementById(idDOMElement).lastChild);
+}
+
+
+function showHideGreeting(displayState, login){
+  let greetingDiv = document.getElementsByClassName('greeting')[0];
+  if (displayState !== 'none'){
+    greetingDiv.firstChild.innerHTML = `Hello, ${login}`;
+  }
+  greetingDiv.style.display = displayState;
+}
+
+function showHideLoginRegister(displayState){
+  let loginRegisterDiv = document.getElementById('loginRegister');
+  loginRegister.style.display = displayState;
+}
+
+function rewriteDiv(newDiv){
+  let div = createNode(newDiv);
+  let contentDiv = document.getElementById('content');
+  contentDiv.removeChild(document.getElementById('cleaner'));
+  contentDiv.insertBefore(div, document.getElementById('menu'));
 }
 
 })

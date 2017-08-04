@@ -13,18 +13,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'jade');
+
 app.get('/', (req, res) => {
   console.log(req.url);
-   res.render('index', {className: "ddd"});
+  fs.readFile('db/lastUser.json', 'utf8', (err, data) => {
+    let lastUser = JSON.parse(data);
+    res.render('index', {login: lastUser.login});
+  });
+
 });
 
 app.get('/assets/*', (req, res) => {
+
    res.sendFile(path.join(__dirname + req.path));
 });
 
 app.post('/change-color', (req, res) => {
   console.log(req.body.colorName);
+  console.log(req.body.login);
   let color = req.body.colorName.toString();
+
+
+
   let className;
 
   switch (color) {
@@ -35,8 +45,23 @@ app.post('/change-color', (req, res) => {
       case "purple": className = 'purple-cleaner'; break;
       case "gold": className = 'gold-cleaner'; break;
       case "turquoise": className = 'turquoise-cleaner'; break;
-      case "empty": className = ''; break;
+      default : className = 'empty'; break;
   }
+
+  fs.readFile('db/users.json', 'utf8', (err, data) => {
+    let usersArray = JSON.parse(data);
+    let indexUser = -1;
+    usersArray.find((element, index) => {
+        if (element.login === req.body.login){
+          indexUser = index;
+          return true;
+      }
+      })
+      usersArray[indexUser].cleanerColor = className;
+    rewriteJSONFile(usersArray, 'db/users.json');
+    });
+
+
 
   res.send({newDiv: getNewDiv(className)});
 });
@@ -48,6 +73,7 @@ let newUser = {
   cleanerState: false,
   cleanerColor: ""
 };
+
 
 console.log(newUser);
 
@@ -74,6 +100,23 @@ fs.readFile('db/users.json', 'utf8', (err, data) => {
 
 });
 
+app.post('/setUserProperties', (req, res) => {
+
+  fs.readFile('db/users.json', 'utf8', (err, data) => {
+
+    let usersArray = JSON.parse(data);
+    let userFromDB = usersArray.find((element) => {
+        if (element.login === req.body.login){
+          return true;
+      }
+      });
+
+      res.send({color: userFromDB.cleanerColor.split('-')[0] });
+
+  });
+
+});
+
 const server = app.listen(8080, () => {
    const host = server.address().address
    const port = server.address().port
@@ -81,7 +124,7 @@ const server = app.listen(8080, () => {
 });
 
 function getNewDiv(className){
-  return   `<div class="cleaner ${className}" id="cleaner"></div>`;
+  return   `<div class="cleaner ${className ==='empty'? '' : className}" id="cleaner"></div>`;
 }
 
 function readJSONFile(filePath){
