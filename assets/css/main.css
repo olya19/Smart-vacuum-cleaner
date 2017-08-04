@@ -146,16 +146,24 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
 /******************************/
 .newRoom {
   visibility: hidden;
-  position:relative;
-  margin: 200px auto;
-  text-align: center;
-  border: 2px solid rgb(241, 236, 172);
-  width: 40%;
-  height: 40%;
+  position:absolute;
+  width: 100%;
+  height: 100%;
   display: block;
-  background-color: rgb(241, 236, 172);
-  border-radius: 4px;
+
+  background-color: rgba(0,0,0, .3);
+
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+}
+.newRoom form{
+  display: block;
+  width: 40%;
+  height: 50%;
+  background-color: rgb(241, 236, 172);
+  margin: 0 auto;
+    border-radius: 4px;
 }
 
 .newRoom input{
@@ -176,7 +184,7 @@ h2 {
 }
 
 .rooms {
-	
+
 	margin-top: 100px;
 	border: 1px solid grey;
 }
@@ -189,6 +197,6 @@ h2 {
 }
 
 #close:hover {
-   
+
     color:#fff;
 }

@@ -1,3 +1,4 @@
+'use strict'
 const express = require('express');
 let bodyParser = require('body-parser')
 let path = require('path');
@@ -117,6 +118,35 @@ app.post('/setUserProperties', (req, res) => {
   });
 
 });
+
+app.post('/api/saveRoom', (req, res) => {
+  fs.readFile('db/users.json', (err, data) =>{
+
+    let usersArray = JSON.parse(data);
+
+    let userId = -1;
+    let userFromDB = usersArray.find((element, index) => {
+        if (element.login === req.body.login){
+          userId = index;
+          return true;
+      }
+      });
+      let room ={
+        roomName: req.body.roomName,
+        roomSquare: req.body.roomSquare,
+        clean: false,
+        wetClean: false,
+        ionization: false
+      };
+      usersArray[userId].rooms.push(room);
+      console.log(usersArray[userId]);
+      res.send({status:'success'});
+      //rewriteJSONFile(usersArray, 'db/users.json');
+  });
+
+
+})
+
 
 const server = app.listen(8080, () => {
    const host = server.address().address

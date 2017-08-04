@@ -203,5 +203,63 @@ function getEl(id){
   return document.getElementById(id);
 }
 
+function getUserLogin(){
+  return getEl('menu').firstChild.id;
+}
+
+let saveBtnRoom =  getEl('saveRoom');
+saveBtnRoom.addEventListener('click', () => {
+  let roomName = getEl('roomName').value;
+  let roomSquare = getEl('roomSquare').value;
+  let login = getUserLogin();
+  let newRoomObj = {
+    'roomName': roomName,
+    'roomSquare': roomSquare,
+    'login': login
+  };
+  fetch('api/saveRoom', {
+    headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+    },
+    method : 'POST',
+    body: JSON.stringify(newRoomObj)
+  }).then((res) => {
+    console.log(res);
+    return res.json();
+  }).then( (json) => {
+    console.log(json);
+    if(json.status === 'success') {
+      newRoom.style.visibility = 'hidden';
+      //removeLastChildFromDOM('rooms');
+      getEl('anyRoom').style.display = 'none';
+    }
+  });
+
+function addNewRoom(roomName, roomSquare){
+  let li = document.createElement('li');
+  li.innerHTML = `${roomName}<form id="changeRoomForm" style="display:none"><input value="${roomName}"></form><input type="button" id="changeRoom" value="Change"><br>Cleaning<input class="check" type="checkbox">
+  Wet Cleaning<input class="check" type="checkbox">Ionization<input class="check"type="checkbox">`
+  getEl('roomList').appendChild(li);
+}
+
+addNewRoom(roomName, roomSquare);
+let time = 0;
+let checkbox = document.getElementsByClassName('check');
+for (let i=0; i < checkbox.length; i++){
+checkbox[i].onchange = () => {
+  if (checkbox[i].checked === true) {
+    time += roomSquare*5;
+  }
+  if (checkbox[i].checked === false) {
+    time -= roomSquare*5;
+  }
+console.log(time);
+}
+}
+getEl('changeRoom').onclick = () => {
+  getEl('changeRoomForm').style.display = 'block';
+}
+})
 
 })
