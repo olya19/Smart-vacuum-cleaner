@@ -143,3 +143,52 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
 .cancel:active, .cancel:focus{
   outline:0 none;
 }
+/******************************/
+.newRoom {
+  visibility: hidden;
+  position:relative;
+  margin: 200px auto;
+  text-align: center;
+  border: 2px solid rgb(241, 236, 172);
+  width: 40%;
+  height: 40%;
+  display: block;
+  background-color: rgb(241, 236, 172);
+  border-radius: 4px;
+  justify-content: center;
+}
+
+.newRoom input{
+  display: block;
+  width: 60%;
+  margin: 5px auto;
+  height: 30px;
+  border: 1px solid grey;
+  border-radius: 4px;
+}
+
+.newRoom label {
+  text-align: center;
+}
+
+h2 {
+	font-size: 24px;
+}
+
+.rooms {
+	
+	margin-top: 100px;
+	border: 1px solid grey;
+}
+
+#close {
+    float:right;
+    display:inline-block;
+    padding:2px 5px;
+    background:#ccc;
+}
+
+#close:hover {
+   
+    color:#fff;
+}

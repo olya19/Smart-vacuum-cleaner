@@ -122,6 +122,17 @@ register.addEventListener('click', (event) => {
 
 function removeLastChildFromDOM(idDOMElement){
   document.getElementById(idDOMElement).removeChild(document.getElementById(idDOMElement).lastChild);
-}
+} 
 
+let newRoom = document.getElementById('newRoom');    //
+let addRoom = document.getElementById('addRoom');    
+addRoom.addEventListener('click', () => {            
+	newRoom.style.visibility = 'visible';            
+	console.log('add new room');                     
+});
+
+let closeAddRoom = document.getElementById('close');
+closeAddRoom.addEventListener('click', () => {
+	newRoom.style.visibility = 'hidden';
+    });
 })

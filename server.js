@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'jade');
 app.get('/', (req, res) => {
-  console.log(`${req.method} ${res.statusCode} ${req.url}`); ///added method & StatusCode
+  console.log(`${req.method} ${res.statusCode} ${req.url}`); //added method & StatusCode
    res.render('index', {className: "ddd"});
 });
 
