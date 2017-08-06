@@ -112,6 +112,7 @@ register.addEventListener('click', (event) => {
   let logInButton = getEl('btnLogIn');
   logInButton.addEventListener('click', () => {
     let user = {login: getEl('login').value};
+    getEl('addRoom').style.display = 'block';
 
     console.log(user);
 
@@ -157,6 +158,7 @@ logOutButton.addEventListener('click', (event) =>{
   getEl('colors')[0].selected = true;
   getEl('cleaner').className = 'cleaner';
   getEl('menu').firstChild.id = '';
+  getEl('addRoom').style.display = 'none';
 });
 
 function removeLastChildFromDOM(idDOMElement){
@@ -169,10 +171,15 @@ addRoom.addEventListener('click', () => {
 	newRoom.style.visibility = 'visible';
 	console.log('add new room');
 });
-let closeAddRoom = getEl('close');
+let closeAddRoom = getEl('closeNew');
 closeAddRoom.addEventListener('click', () => {
 	newRoom.style.visibility = 'hidden';
-    });
+});
+
+let closeChanges = getEl('closeChanges');
+closeChanges.addEventListener('click', () => {
+  getEl('changeRoomForm').style.display = 'none';
+});
 
 function showHideGreeting(displayState, login){
   let greetingDiv = document.getElementsByClassName('greeting')[0];
@@ -212,6 +219,12 @@ saveBtnRoom.addEventListener('click', () => {
   let roomName = getEl('roomName').value;
   let roomSquare = getEl('roomSquare').value;
   let login = getUserLogin();
+  if (roomName === '' || roomSquare ===''){
+    alert('Please, enter name and square');
+   return;
+  }
+
+
   let newRoomObj = {
     'roomName': roomName,
     'roomSquare': roomSquare,
@@ -238,9 +251,12 @@ saveBtnRoom.addEventListener('click', () => {
 
 function addNewRoom(roomName, roomSquare){
   let li = document.createElement('li');
-  li.innerHTML = `${roomName}<form id="changeRoomForm" style="display:none"><input value="${roomName}"></form><input type="button" id="changeRoom" value="Change"><br>Cleaning<input class="check" type="checkbox">
+  li.innerHTML = `${roomName}<br>Cleaning<input class="check" type="checkbox">
   Wet Cleaning<input class="check" type="checkbox">Ionization<input class="check"type="checkbox">`
   getEl('roomList').appendChild(li);
+  let option = document.createElement('option');
+  option.innerHTML = `${roomName}`;
+  getEl('listOfRooms').appendChild(option);
 }
 
 addNewRoom(roomName, roomSquare);
@@ -257,9 +273,30 @@ checkbox[i].onchange = () => {
 console.log(time);
 }
 }
+
+})
+
 getEl('changeRoom').onclick = () => {
   getEl('changeRoomForm').style.display = 'block';
 }
-})
 
+getEl('deleteRoom').onclick = () => {
+
+  let rooms = getEl('listOfRooms');
+  rooms.onchange = () => {
+    let room;
+    for (let i = 0; i < rooms.length; i++){
+      if (rooms[i].selected) {
+        room = rooms[i].value;
+
+      }
+    }
+};
+
+  if (confirm('Do you really want to delete this room?')){
+  alert('thanks');
+
+
+}
+}
 })

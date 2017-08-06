@@ -189,14 +189,14 @@ h2 {
 	border: 1px solid grey;
 }
 
-#close {
+#closeNew, #closeChanges {
     float:right;
     display:inline-block;
     padding:2px 5px;
     background:#ccc;
 }
 
-#close:hover {
+#closeNew:hover, #closeChanges:hover {
 
     color:#fff;
 }
