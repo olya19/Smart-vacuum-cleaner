@@ -73,7 +73,8 @@ app.post('/login', (req, res) => {
 let newUser = {
   login: req.body.login,
   cleanerState: false,
-  cleanerColor: ""
+  cleanerColor: "",
+  rooms: []
 };
 
 
@@ -145,7 +146,34 @@ app.post('/api/saveRoom', (req, res) => {
   });
 
 
-})
+});
+
+app.delete('/api/deleteRoom', (res, req) => {
+  console.dir(req.originalUrl);
+  fs.readFile('db/users.json', (err, data) => {
+    let usersArray = JSON.parse(data);
+    let userIndex = -1;
+    usersArray.find((element, index) => {
+        if (element.login === req.body.login){
+          userIndex = index;
+          return true;
+      }
+      });
+      let roomIndex;
+    usersArray[userId].rooms.find( (element, index) => {
+      if (element.roomName = req.bosw.roomName){
+        roomIndex = index;
+        return true;
+      }
+    })
+    usersArray[userId].rooms.splice(roomIndex, 1);
+
+    rewriteJSONFile(usersArray, 'db/users.json')
+    if (rewriteJSONFile(usersArray, 'db/users.json')){
+      res.status(200).send('success');
+    }
+  });
+});
 
 
 const server = app.listen(8080, () => {
@@ -169,5 +197,6 @@ function rewriteJSONFile(object, filePath){
   fs.writeFile(filePath, JSON.stringify(object), (err) => {
     if (err) throw err;
     console.log('success save');
+    return true;
   });
 }

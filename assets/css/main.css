@@ -209,8 +209,7 @@ h2 {
 }
 
 .add-room-button{
-  display: block;;
-  width: 50%;
+  display: inline-block;;
   margin: 0 auto;
 }
 
