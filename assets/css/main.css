@@ -196,16 +196,15 @@ h2 {
  padding: 0 20px;
 }
 
-.close-button {
-  float: right;
+#closeNew, #closeChanges {
+    float:right;
     display:inline-block;
     position: relative;
     padding:2px 5px;
     background:#ccc;
 }
 
-.close-button:hover {
-
+.close-button:hover, #closeChanges:hover{
     color:#fff;
 }
 

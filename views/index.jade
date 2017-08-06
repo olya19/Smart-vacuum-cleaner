@@ -10,7 +10,7 @@ html(lang="en")
       div(class="cleaner", id="cleaner")
       div(class="new-room", id="newRoom")
           form(method="POST" action="/" id="newRoomForm")  
-           p(id="close" class="close-button") x
+           p(id="closeNew" class="close-button") x
            h2 Add room
            div(class="room-name")
             label Name
@@ -20,6 +20,19 @@ html(lang="en")
             input(type="number" placeholder="20.5" min="1" id="roomSquare" step="0.1")
            input(type="button" value="Save" id="saveRoom")
            input(type="reset" value="Reset")
+      form(method="POST" action="/" id="changeRoomForm" style="display:none")
+            p(id="closeChanges") x
+            h2 Change room
+            select(id="listOfRooms")
+             option(value="empty") Choose the room
+           br
+           input(placeholder="Enter new name")
+           br
+           label Square
+           input(type="number" id="squareRoomChange")
+           br
+           input(type="button" value="Save changes" id="saveRoomChanges")
+           input(type="button" value="Delete room" id="deleteRoom")
       aside(class="menu" id="menu")
         div(class="greeting" id="#{locals.login}")
           h3 Hello, 
@@ -45,3 +58,4 @@ html(lang="en")
           ol#roomList
           p#anyRoom You haven't added any room yet. Please press the button below to add new room
         input(type="button" id="addRoom" value="Add new room" class="add-room-button")
+        input(type="button" id="changeRoom" value="Change room")
