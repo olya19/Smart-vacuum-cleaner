@@ -14,6 +14,7 @@ body{
   background: url("../img/cleaner.png") center center no-repeat;
   background-size: contain;
   border-radius: 50%;
+  padding: 50px 0 50px 50px;
 }
 
 .cleaner img{
@@ -132,7 +133,8 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   text-align: center;
 }
 
-.form-reg input[type="button"]{
+.form-reg input[type="button"], .new-room input[type="button"],
+.new-room input[type="reset"]{
   width: 50%;
 }
 
@@ -144,39 +146,44 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   outline:0 none;
 }
 /******************************/
-.newRoom {
+.new-room {
   visibility: hidden;
   position:absolute;
   width: 100%;
   height: 100%;
   display: block;
-
   background-color: rgba(0,0,0, .3);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
-.newRoom form{
-  display: block;
+.new-room form{
   width: 40%;
   height: 50%;
   background-color: rgb(241, 236, 172);
   margin: 0 auto;
     border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.newRoom input{
-  display: block;
-  width: 60%;
-  margin: 5px auto;
-  height: 30px;
-  border: 1px solid grey;
-  border-radius: 4px;
+.room-name, .square{
+  width: 80%;
 }
 
-.newRoom label {
-  text-align: center;
+.room-name input, .square input{
+  width: 75%;
+}
+.room-name label, .square label{
+  display: inline-block;
+  width: 25%;
+}
+
+.close-button{
+  align-self: flex-end;
 }
 
 h2 {
@@ -184,19 +191,53 @@ h2 {
 }
 
 .rooms {
-
-	margin-top: 100px;
-	border: 1px solid grey;
+	border: 1px solid grey;'
+ width: 100%;
+ padding: 0 20px;
 }
 
-#close {
-    float:right;
+.close-button {
+  float: right;
     display:inline-block;
+    position: relative;
     padding:2px 5px;
     background:#ccc;
 }
 
-#close:hover {
+.close-button:hover {
 
     color:#fff;
+}
+
+.add-room-button{
+  display: block;;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.greeting{
+  width: 100%;
+  background-color: rgba(0, 0,0, .3);
+  padding: 20px 0;
+}
+
+.greeting h3, .greeting p{
+  text-align: right;
+  padding: 0 20px 0 0;
+}
+.menu h2{
+  text-align: center;
+}
+
+.colors{
+  width: 100%;
+  padding: 0 20px;
+}
+.colors form{
+  display: block;
+  margin: 0 auto;
+}
+
+.colors form select{
+  width: 100%;
 }

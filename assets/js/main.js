@@ -231,14 +231,13 @@ saveBtnRoom.addEventListener('click', () => {
     console.log(json);
     if(json.status === 'success') {
       newRoom.style.visibility = 'hidden';
-      //removeLastChildFromDOM('rooms');
       getEl('anyRoom').style.display = 'none';
     }
   });
 
 function addNewRoom(roomName, roomSquare){
   let li = document.createElement('li');
-  li.innerHTML = `${roomName}<form id="changeRoomForm" style="display:none"><input value="${roomName}"></form><input type="button" id="changeRoom" value="Change"><br>Cleaning<input class="check" type="checkbox">
+  li.innerHTML = `${roomName}<form class="changeRoomForm" style="display:none"><input value="${roomName}"></form><input type="button" id="changeRoom" value="Change"><br>Cleaning<input class="check" type="checkbox">
   Wet Cleaning<input class="check" type="checkbox">Ionization<input class="check"type="checkbox">`
   getEl('roomList').appendChild(li);
 }
