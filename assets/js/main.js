@@ -1,31 +1,5 @@
 window.addEventListener('load', () => {
-
-  let greetingId = getEl('menu').firstChild.id;
-  if (typeof greetingId !== 'undefined'){
-    showHideGreeting('block', greetingId);
-    fetch('/setUserProperties', {
-      headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-      },
-      method : 'POST',
-      body: JSON.stringify({login:greetingId})
-    }).then( (res) => {
-      return res.json();
-    }).then( (json) => {
-
-      let colors = document.getElementById('colors');
-      for (var i = 0; i < colors.length; i++){
-        if (colors[i].value === json.color) {
-          colors[i].selected = true;
-        }
-      }
-      getEl('cleaner').className += ` ${json.color === 'empty'? '' : json.color+'-cleaner'}`;
-      showHideLoginRegister('none');
-    });
-  }
-
-
+  showHideGreeting('none');
   class User{
 
     constructor(login, password){
@@ -177,17 +151,13 @@ window.addEventListener('load', () => {
     getEl('changeRoomForm').style.display = 'none';
   });
 
-  function showHideGreeting(displayState, login){
-    let greetingDiv = document.getElementsByClassName('greeting')[0];
-    if (displayState !== 'none'){
-      greetingDiv.firstChild.innerHTML = `Hello, ${login}`;
-    }
-    greetingDiv.style.display = displayState;
-    showHideRooms(displayState);
-  }
+
+
 
   function showHideRooms(displayState){
     getEl('rooms').style.display = displayState;
+    getEl('addRoom').style.display = displayState;
+    getEl('changeRoom').style.display = displayState;
   }
 
   function showHideLoginRegister(displayState){
@@ -266,7 +236,6 @@ window.addEventListener('load', () => {
   }
 
   getEl('deleteRoom').onclick = () => {
-
     if (confirm('Do you really want to delete this room?')){
       let rooms = getEl('listOfRooms');
       let userLogin = getUserLogin();
@@ -274,7 +243,7 @@ window.addEventListener('load', () => {
         for (let i = 0; i < rooms.length; i++){
           if (rooms[i].selected) {
             roomName = rooms[i].value;
-            fetch(`api/deleteRoom?login=${userLogin}`, {
+            fetch('api/deleteRoom', {
               headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
@@ -301,4 +270,17 @@ window.addEventListener('load', () => {
     getEl('listOfRooms').appendChild(option);
   }
 
+  function showHideGreeting(displayState, login){
+    let greetingDiv = document.getElementsByClassName('greeting')[0];
+    if (displayState !== 'none'){
+      greetingDiv.firstChild.innerHTML = `Hello, ${login}`;
+    }
+    showHideElement(displayState, greetingDiv);
+    showHideRooms(displayState);
+  }
+
+
+    function showHideElement(displayState, element){
+      element.style.display = displayState;
+    }
 })

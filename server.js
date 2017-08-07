@@ -148,8 +148,8 @@ app.post('/api/saveRoom', (req, res) => {
 
 });
 
-app.delete('/api/deleteRoom', (res, req) => {
-  console.dir(req.originalUrl);
+app.delete('/api/deleteRoom', (req, res) => {
+  console.dir(req.body);
   fs.readFile('db/users.json', (err, data) => {
     let usersArray = JSON.parse(data);
     let userIndex = -1;
@@ -160,13 +160,13 @@ app.delete('/api/deleteRoom', (res, req) => {
       }
       });
       let roomIndex;
-    usersArray[userId].rooms.find( (element, index) => {
-      if (element.roomName = req.bosw.roomName){
+    usersArray[userIndex].rooms.find( (element, index) => {
+      if (element.roomName = req.body.roomName){
         roomIndex = index;
         return true;
       }
     })
-    usersArray[userId].rooms.splice(roomIndex, 1);
+    usersArray[userIndex].rooms.splice(roomIndex, 1);
 
     rewriteJSONFile(usersArray, 'db/users.json')
     if (rewriteJSONFile(usersArray, 'db/users.json')){
