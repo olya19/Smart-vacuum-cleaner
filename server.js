@@ -18,10 +18,7 @@ app.set('view engine', 'jade');
 app.get('/', (req, res) => {
 
   console.log(`${req.method} ${res.statusCode} ${req.url}`); //added method & StatusCode
-  fs.readFile('db/lastUser.json', 'utf8', (err, data) => {
-    let lastUser = JSON.parse(data);
-    res.render('index', {login: lastUser.login});
-  });
+    res.render('index');
 
 });
 
@@ -142,14 +139,13 @@ app.post('/api/saveRoom', (req, res) => {
       usersArray[userId].rooms.push(room);
       console.log(usersArray[userId]);
       res.send({status:'success'});
-      //rewriteJSONFile(usersArray, 'db/users.json');
+      rewriteJSONFile(usersArray, 'db/users.json');
   });
 
 
 });
 
 app.delete('/api/deleteRoom', (req, res) => {
-  console.dir(req.body);
   fs.readFile('db/users.json', (err, data) => {
     let usersArray = JSON.parse(data);
     let userIndex = -1;
@@ -161,17 +157,16 @@ app.delete('/api/deleteRoom', (req, res) => {
       });
       let roomIndex;
     usersArray[userIndex].rooms.find( (element, index) => {
-      if (element.roomName = req.body.roomName){
+      if (element.roomName === req.body.roomName){
         roomIndex = index;
         return true;
       }
     })
     usersArray[userIndex].rooms.splice(roomIndex, 1);
 
-    rewriteJSONFile(usersArray, 'db/users.json')
-    if (rewriteJSONFile(usersArray, 'db/users.json')){
-      res.status(200).send('success');
-    }
+    rewriteJSONFile(usersArray, 'db/users.json');
+    res.status(200).send(usersArray[userIndex]);
+
   });
 });
 

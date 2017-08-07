@@ -243,19 +243,27 @@ window.addEventListener('load', () => {
         for (let i = 0; i < rooms.length; i++){
           if (rooms[i].selected) {
             roomName = rooms[i].value;
-            fetch('api/deleteRoom', {
-              headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-              },
-              method : 'DELETE',
-              body: JSON.stringify({login:userLogin, "roomName":roomName})
-            }).then((res) => {
-              console.log(res.status);
-            });
-
           }
         }
+        console.log(roomName);
+        fetch('api/deleteRoom', {
+          headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+          },
+          method : 'DELETE',
+          body: JSON.stringify({login:userLogin, "roomName":roomName})
+        }).then((res) => {
+          console.log(res);
+          return res.json();
+        }).then((json)=>{
+          console.log(json.rooms, 'response from server');
+          clearRoomsList();
+
+          for (let i=0; i< json.rooms.length; i++){
+            addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
+          }
+        }).catch(error => console.log('error:', error));;
     }
   }
 
@@ -265,6 +273,7 @@ window.addEventListener('load', () => {
     Wet Cleaning<input class="check" type="checkbox" ${wetClean?"checked":"unchecked"}>
     Ionization<input class="check"type="checkbox"  ${ionization?"checked":"unchecked"}>`
     getEl('roomList').appendChild(li);
+
     let option = document.createElement('option');
     option.innerHTML = `${roomName}`;
     getEl('listOfRooms').appendChild(option);
@@ -282,5 +291,21 @@ window.addEventListener('load', () => {
 
     function showHideElement(displayState, element){
       element.style.display = displayState;
+    }
+
+
+    function clearRoomsList(){
+
+      let roomList = getEl('roomList');
+
+      while(roomList.firstChild !== null){
+        roomList.removeChild(roomList.firstChild);
+      }
+
+      let listOfRooms = getEl('listOfRooms');
+      for (let i = 0; i < listOfRooms.options.length; i++){
+        listOfRooms.options.remove(i);
+      }
+      console.log(listOfRooms);
     }
 })
