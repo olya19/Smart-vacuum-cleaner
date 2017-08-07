@@ -234,19 +234,14 @@ window.addEventListener('load', () => {
   getEl('changeRoom').onclick = () => {
     getEl('changeRoomForm').style.display = 'block';
   }
-
+/*************************************************** */
   getEl('deleteRoom').onclick = () => {
-    if (confirm('Do you really want to delete this room?')){
-      let rooms = getEl('listOfRooms');
-      let userLogin = getUserLogin();
-        let roomName;
-        for (let i = 0; i < rooms.length; i++){
-          if (rooms[i].selected) {
-            roomName = rooms[i].value;
-          }
-        }
+    let roomName = getRoomNameForChanges();
+    if (confirm(`Do you really want to delete ${roomName}?`)){
+        let roomName = getRoomNameForChanges();
+        let userLogin = getUserLogin();
         console.log(roomName);
-        fetch('api/deleteRoom', {
+        fetch('api/rooms/delete', {
           headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -263,8 +258,41 @@ window.addEventListener('load', () => {
           for (let i=0; i< json.rooms.length; i++){
             addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
           }
+          getEl('changeRoomForm').style.display = 'none';
         }).catch(error => console.log('error:', error));;
     }
+  }
+  /********************************************************************************/
+  getEl('saveRoomChanges').onclick = () => {
+   let newRoomName = getEl('changeNameField').value;
+   if (newRoomName !== ''){
+    let roomName = getRoomNameForChanges();
+    let userLogin = getUserLogin();
+      console.log(`${roomName} becomes ${newRoomName}`);
+    fetch('api/rooms/edit', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        method : 'PUT',
+        body: JSON.stringify({login:userLogin, "roomName":roomName, "newRoomName":newRoomName})
+      }).then((res) => {
+      console.log(res);
+        return res.json();
+      }).then((json)=>{
+         console.log(json.rooms, 'response from server');
+
+        clearRoomsList();
+
+         for (let i=0; i< json.rooms.length; i++){
+            addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
+          }
+
+        getEl('changeRoomForm').style.display = 'none';
+        getEl('changeNameField').value = '';
+       }).catch(error => console.log('error:', error));
+    }
+    else alert('You have not did any changes');
   }
 
   function addNewRoom(roomName, roomSquare,clean, wetClean, ionization){
@@ -303,13 +331,23 @@ window.addEventListener('load', () => {
       }
 
       let listOfRooms = getEl('listOfRooms');
-      while(listOfRooms.firstChild !== null){
-        let option = listOfRooms.removeChild(listOfRooms.firstChild);
-        console.log('remove options ', option);
+       while(listOfRooms.firstChild !== null){
+        listOfRooms.removeChild(listOfRooms.firstChild);
       }
       let option = document.createElement('option');
       option.value = 'empty';
       option.innerHTML = 'Choose the room';
       listOfRooms.appendChild(option);
     }
+
+  function getRoomNameForChanges (){
+    let rooms = getEl('listOfRooms');
+    let roomName;
+      for (let i = 0; i < rooms.length; i++){
+        if (rooms[i].selected) {
+          roomName = rooms[i].value;
+      }
+    }
+    return roomName;
+  }
 })

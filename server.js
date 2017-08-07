@@ -145,7 +145,7 @@ app.post('/api/saveRoom', (req, res) => {
 
 });
 
-app.delete('/api/deleteRoom', (req, res) => {
+app.delete('/api/rooms/delete', (req, res) => {
   fs.readFile('db/users.json', (err, data) => {
     let usersArray = JSON.parse(data);
     let userIndex = -1;
@@ -168,6 +168,30 @@ app.delete('/api/deleteRoom', (req, res) => {
     res.status(200).send(usersArray[userIndex]);
 
   });
+});
+
+app.put('/api/rooms/edit', (req, res) => {
+  fs.readFile('db/users.json', (err, data) => {
+    let usersArray = JSON.parse(data);
+    let userIndex = -1;
+    usersArray.find((element, index) => {
+      if(element.login === req.body.login){
+        userIndex = index;
+        return true;
+      }
+    })
+
+    let roomIndex;
+    usersArray[userIndex].rooms.find((element, index) => {
+      if (element.roomName === req.body.roomName){
+        roomIndex = index;
+        return true;
+      } 
+    })
+    usersArray[userIndex].rooms[roomIndex].roomName = req.body.newRoomName;
+    rewriteJSONFile(usersArray, 'db/users.json');
+    res.status(200).send(usersArray[userIndex]);
+  })
 });
 
 
