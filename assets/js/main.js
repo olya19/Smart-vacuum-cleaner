@@ -303,9 +303,13 @@ window.addEventListener('load', () => {
       }
 
       let listOfRooms = getEl('listOfRooms');
-      for (let i = 0; i < listOfRooms.options.length; i++){
-        listOfRooms.options.remove(i);
+      while(listOfRooms.firstChild !== null){
+        let option = listOfRooms.removeChild(listOfRooms.firstChild);
+        console.log('remove options ', option);
       }
-      console.log(listOfRooms);
+      let option = document.createElement('option');
+      option.value = 'empty';
+      option.innerHTML = 'Choose the room';
+      listOfRooms.appendChild(option);
     }
 })
