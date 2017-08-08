@@ -129,6 +129,7 @@ window.addEventListener('load', () => {
     getEl('cleaner').className = 'cleaner';
     getEl('menu').firstChild.id = '';
     getEl('addRoom').style.display = 'none';
+    getEl('changeRoomForm').style.display = 'none';
   });
 
   function removeLastChildFromDOM(idDOMElement){
@@ -238,16 +239,15 @@ window.addEventListener('load', () => {
   getEl('deleteRoom').onclick = () => {
     let roomName = getRoomNameForChanges();
     if (confirm(`Do you really want to delete ${roomName}?`)){
-        let roomName = getRoomNameForChanges();
         let userLogin = getUserLogin();
         console.log(roomName);
-        fetch('api/rooms/delete', {
+        fetch(`api/rooms/delete?login=${userLogin}&roomName=${roomName}`, {
           headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
           },
           method : 'DELETE',
-          body: JSON.stringify({login:userLogin, "roomName":roomName})
+          //body: JSON.stringify({login:userLogin, "roomName":roomName})
         }).then((res) => {
           console.log(res);
           return res.json();
@@ -269,13 +269,13 @@ window.addEventListener('load', () => {
     let roomName = getRoomNameForChanges();
     let userLogin = getUserLogin();
       console.log(`${roomName} becomes ${newRoomName}`);
-    fetch('api/rooms/edit', {
+    fetch(`api/rooms/edit?login=${userLogin}&roomName=${roomName}`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
         },
         method : 'PUT',
-        body: JSON.stringify({login:userLogin, "roomName":roomName, "newRoomName":newRoomName})
+        body: JSON.stringify({"newRoomName":newRoomName})
       }).then((res) => {
       console.log(res);
         return res.json();
@@ -299,7 +299,7 @@ window.addEventListener('load', () => {
     let li = document.createElement('li');
     li.innerHTML = `${roomName}<br>Cleaning<input class="check" type="checkbox" ${clean?"checked":"unchecked"}>
     Wet Cleaning<input class="check" type="checkbox" ${wetClean?"checked":"unchecked"}>
-    Ionization<input class="check"type="checkbox"  ${ionization?"checked":"unchecked"}>`
+    Ionization<input class="check" type="checkbox"  ${ionization?"checked":"unchecked"}>`
     getEl('roomList').appendChild(li);
 
     let option = document.createElement('option');
