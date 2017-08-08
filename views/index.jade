@@ -9,7 +9,7 @@ html(lang="en")
     div(class="content" id="content")
       div(class="cleaner", id="cleaner")
       div(class="new-room", id="newRoom")
-          form(method="POST" action="/" id="newRoomForm")  
+          form(method="POST" action="/" id="newRoomForm")
            p(id="closeNew" class="close-button") x
            h2 Add room
            div(class="room-name")
@@ -32,11 +32,11 @@ html(lang="en")
             input(type="button" value="Delete room" id="deleteRoom")
       aside(class="menu" id="menu")
         div(class="greeting" id="#{locals.login}")
-          h3 Hello, 
-          p 
+          h3 Hello,
+          p
            a(href="#" id="logOut" class="log-out") Log out
         h2 Menu
-        div(class="colors")
+        div(class="colors" style="display:none")
          h3 Choose the color
          form(method="POST" action="/")
            select(id="colors")
