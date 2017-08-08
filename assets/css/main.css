@@ -99,7 +99,7 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
 
 
 
-.modal-form{
+.modal-form, .change-room-form{
   width: 100%;
   height: 100%;
   position: absolute;
@@ -109,8 +109,12 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   justify-content: center;
   align-items: center;
 }
+.modal-form, .change-room-form{
+    visibility: hidden;
+}
 
-.form-reg{
+
+.form-reg, .change-room-form form{
   width: 40%;
   height: 50%;
   display: block;
@@ -120,7 +124,8 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   flex-direction: column;
   justify-content: center;
 }
-.form-reg input{
+
+.form-reg input, .change-room-form form input{
   display: block;
   width: 80%;
   margin: 10px auto;
