@@ -102,9 +102,6 @@ window.addEventListener('load', () => {
     getEl('menu').firstChild.id = '';
     getEl('addRoom').style.display = 'none';
     clearRoomsList();
-    getEl('changeRoomForm').style.display = 'none';
-
-    
   });
 
   function removeLastChildFromDOM(idDOMElement){
@@ -197,7 +194,6 @@ window.addEventListener('load', () => {
   })
 
   getEl('changeRoom').onclick = () => {
-    //getEl('changeRoomForm').style.display = 'block';
     document.getElementsByClassName('change-room-form')[0].style.visibility = 'visible';
   }
 /*************************************************** */
@@ -211,8 +207,7 @@ window.addEventListener('load', () => {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
           },
-          method : 'DELETE',
-          //body: JSON.stringify({login:userLogin, "roomName":roomName})
+          method : 'DELETE'
         }).then((res) => {
           console.log(res);
           return res.json();
@@ -224,6 +219,7 @@ window.addEventListener('load', () => {
             addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
           }
           getEl('changeRoomForm').style.display = 'none';
+          //document.getElementsByClassName('change-room-form')[0].style.visibility = 'visible';
         }).catch(error => console.log('error:', error));;
     }
   }
@@ -253,7 +249,8 @@ window.addEventListener('load', () => {
             addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
           }
 
-        getEl('changeRoomForm').style.display = 'none';
+        //getEl('changeRoomForm').style.display = 'none';
+        document.getElementsByClassName('change-room-form')[0].style.visibility = 'hidden';
         getEl('changeNameField').value = '';
        }).catch(error => console.log('error:', error));
     }
@@ -323,7 +320,5 @@ window.addEventListener('load', () => {
       closeButtons[i].parentNode.parentNode.style.visibility = 'hidden';
     });
   }
-
-
 
 })
