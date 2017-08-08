@@ -23,7 +23,7 @@
   "homepage": "https://github.com/olya19/Smart-vacuum-cleaner#readme",
   "dependencies": {
     "body-parser": "^1.17.2",
-    "express": "^4.15.3",
+    "express": "^4.15.4",
     "jade": "^1.11.0"
   }
 }
