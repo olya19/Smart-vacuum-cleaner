@@ -102,6 +102,9 @@ window.addEventListener('load', () => {
     getEl('menu').firstChild.id = '';
     getEl('addRoom').style.display = 'none';
     clearRoomsList();
+    getEl('changeRoomForm').style.display = 'none';
+    document.getElementsByClassName('colors')[0].style.display = "none";
+
   });
 
   function removeLastChildFromDOM(idDOMElement){
@@ -177,21 +180,8 @@ window.addEventListener('load', () => {
     });
 
   addNewRoom(roomName, roomSquare);
-  let time = 0;
-  let checkbox = document.getElementsByClassName('check');
-  for (let i=0; i < checkbox.length; i++){
-  checkbox[i].onchange = () => {
-    if (checkbox[i].checked === true) {
-      time += roomSquare*5;
-    }
-    if (checkbox[i].checked === false) {
-      time -= roomSquare*5;
-    }
-  console.log(time);
-  }
-  }
+});
 
-  })
 
   getEl('changeRoom').onclick = () => {
     document.getElementsByClassName('change-room-form')[0].style.visibility = 'visible';
@@ -259,14 +249,29 @@ window.addEventListener('load', () => {
 
   function addNewRoom(roomName, roomSquare,clean, wetClean, ionization){
     let li = document.createElement('li');
-    li.innerHTML = `${roomName}<br>Cleaning<input class="check" type="checkbox" ${clean?"checked":"unchecked"}>
-    Wet Cleaning<input class="check" type="checkbox" ${wetClean?"checked":"unchecked"}>
-    Ionization<input class="check" type="checkbox"  ${ionization?"checked":"unchecked"}>`
+    li.innerHTML = `${roomName}<br>Cleaning<input class="check" type="checkbox"}>
+    Wet Cleaning<input class="check" type="checkbox"}>
+    Ionization<input class="check" type="checkbox"}>`
     getEl('roomList').appendChild(li);
 
     let option = document.createElement('option');
     option.innerHTML = `${roomName}`;
     getEl('listOfRooms').appendChild(option);
+
+    let time = 0;
+    let checkbox = document.getElementsByClassName('check');
+    for (let i=0; i < checkbox.length; i++){
+    checkbox[i].onchange = () => {
+      console.log('hello');
+      if (checkbox[i].checked === true) {
+        time += roomSquare*10;
+      }
+      if (checkbox[i].checked === false) {
+        time -= roomSquare*10;
+      }
+    console.log(time);
+    }
+    }
   }
 
   function showHideGreeting(displayState, login){
