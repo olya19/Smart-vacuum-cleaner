@@ -146,18 +146,19 @@ app.post('/api/saveRoom', (req, res) => {
 });
 
 app.delete('/api/rooms/delete', (req, res) => {
-  fs.readFile('db/users.json', (err, data) => {
+
+ fs.readFile('db/users.json', (err, data) => {
     let usersArray = JSON.parse(data);
     let userIndex = -1;
     usersArray.find((element, index) => {
-        if (element.login === req.body.login){
+        if (element.login === req.query.login){
           userIndex = index;
           return true;
       }
       });
       let roomIndex;
     usersArray[userIndex].rooms.find( (element, index) => {
-      if (element.roomName === req.body.roomName){
+      if (element.roomName === req.query.roomName){
         roomIndex = index;
         return true;
       }
@@ -175,7 +176,7 @@ app.put('/api/rooms/edit', (req, res) => {
     let usersArray = JSON.parse(data);
     let userIndex = -1;
     usersArray.find((element, index) => {
-      if(element.login === req.body.login){
+      if(element.login === req.query.login){
         userIndex = index;
         return true;
       }
@@ -183,10 +184,10 @@ app.put('/api/rooms/edit', (req, res) => {
 
     let roomIndex;
     usersArray[userIndex].rooms.find((element, index) => {
-      if (element.roomName === req.body.roomName){
+      if (element.roomName === req.query.roomName){
         roomIndex = index;
         return true;
-      } 
+      }
     })
     usersArray[userIndex].rooms[roomIndex].roomName = req.body.newRoomName;
     rewriteJSONFile(usersArray, 'db/users.json');
