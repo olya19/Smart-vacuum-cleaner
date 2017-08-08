@@ -195,7 +195,28 @@ app.put('/api/rooms/edit', (req, res) => {
   })
 });
 
+app.put('api/rooms/edit/cleanMod', (req, res) => {
+  fs.readFile('db/users.json', (err, data) => {
+    let usersArray = JSON.parse(data);
+    let userIndex = -1;
+    usersArray.find((element, index) => {
+      if(element.login === req.query.login){
+        userIndex = index;
+        return true;
+      }
+    })
 
+    let roomIndex;
+    usersArray[userIndex].rooms.find((element, index) => {
+      if (element.roomName === req.query.roomName){
+        roomIndex = index;
+        return true;
+      }
+    })
+    usersArray[userIndex].rooms[roomIndex][req.query.nameOfCleaningMod] = req.body.cleaningModState;
+    rewriteJSONFile(usersArray, 'db/users.json');
+})
+})
 const server = app.listen(8080, () => {
    const host = server.address().address
    const port = server.address().port

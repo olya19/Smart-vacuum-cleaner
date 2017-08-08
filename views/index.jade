@@ -9,20 +9,16 @@ html(lang="en")
     div(class="content" id="content")
       div(class="cleaner", id="cleaner")
       div(class="new-room modal-window", id="newRoom")
-          form(method="POST" action="/" id="newRoomForm")
-           p(id="closeNew" class="close-button") x
+        form(method="POST" action="/" id="newRoomForm")
+           p(class="close-button") x
            h2 Add room
-           div(class="room-name")
-            label Name
-            input(type="text" placeholder="Kitchen" id="roomName")
-           div(class="square")
-            label Square
-            input(type="number" placeholder="20.5" min="1" id="roomSquare" step="0.1")
+           input(type="text" placeholder="Enter room name" id="roomName")
+           input(type="number" placeholder="Square" min="1" id="roomSquare" step="0.1")
            input(type="button" value="Save" id="saveRoom")
            input(type="reset" value="Reset")
       div(class="change-room-form modal-window")
        form(method="POST" action="/" id="changeRoomForm")
-            p(id="closeChanges" class="close-button") x
+            p(class="close-button") x
             h2 Change room
             select(id="listOfRooms")
              option(value="empty") Choose the room
@@ -43,8 +39,12 @@ html(lang="en")
           h3 Hello,
           p
            a(href="#" id="logOut" class="log-out") Log out
-        h2 Menu
-        div(class="colors" style="display:none")
+        div(id="loginRegister" class="start-page")
+          h1 Hello from smart vacuum cleaner!
+          p Whether you love having the latest tech, hate cleaning or you’re not as mobile as you once were, robot vacuum cleaners are a fun way to get a rather boring household chore done. And they certainly look impressive but with the most expensive one we tested costing eight hundred quid, it’s worth knowing exactly what you’re getting for your money before you invest. They don’t claim to be as good as your standard household vacuum cleaner when it comes to suction and dust capacity, so if that’s all you care about it may be better to buy a good upright vacuum cleaner. But they are a convenient way of keeping your floors looking spick and span with minimal effort. Most come with apps too, so you can control them outside the home. 
+          h2 To get access to your cleaner #[a(href="#" id="register") register/login ] now
+        div(class="colors")
+         h2 Menu
          h3 Choose the color
          form(method="POST" action="/")
            select(id="colors")
@@ -56,11 +56,9 @@ html(lang="en")
              option(value="purple") Purple
              option(value="green") Green
              option(value="turquoise") Turtuoise
-        div(id="loginRegister")
-          p To save your options #[a(href="#" id="register") register/login ] now
         div.rooms#rooms
           h2 Your rooms:
           ol#roomList
           p#anyRoom You haven't added any room yet. Please press the button below to add new room
-        input(type="button" id="addRoom" value="Add new room" class="add-room-button")
-        input(type="button" id="changeRoom" value="Change room")
+        input(type="button" id="addRoom" value="Add new room" class="button")
+        input(type="button" id="changeRoom" value="Change room" class="button")
