@@ -1,26 +1,5 @@
 window.addEventListener('load', () => {
   showHideGreeting('none');
-  class User{
-
-    constructor(login, password){
-      this._login = login;
-      this._password = password;
-      this._cleanerState = false;
-      this._cleanerColor = "";
-    }
-
-      set login(l) { this._login = l;   }
-      set password(p){ this._password = p;   }
-      set cleanerState(cs){ this._cleanerState = cs;   }
-      set cleanerColor(cc){ this._cleanerColor = cc;   }
-
-      get login(){  return this._login;    }
-      get password(){ return this._password; }
-      get cleanerState(){ return this._cleanerState; }
-      get cleanerColor(){ return this._cleanerColor; }
-
-    }
-
 
     var colors = getEl('colors');
     colors.onchange = () => {
@@ -60,66 +39,57 @@ window.addEventListener('load', () => {
   register.addEventListener('click', (event) => {
     event.preventDefault();
     console.log('register clicked');
+    document.getElementsByClassName('modal-form')[0].style.visibility = 'visible';
 
-    let htmlStr = `<div class="modal-form">
-      <form action="" class="form-reg">
-        <label for="">LOG IN</label>
-        <input type="text" placeholder="login" id="login">
-        <input type="button" value="Log in" id="btnLogIn">
-        <button class="cancel" id="cancel">[ Cancel ]</button>
-      </form>
-    </div>`;
 
-    let modalForm = createNode(htmlStr);
-    console.log(modalForm);
-    let content = getEl('content').appendChild(modalForm);
+  });
 
-    let cancelButton = getEl('cancel');
-    cancelButton.addEventListener('click', () => {
-      removeLastChildFromDOM('content');
+  let logInButton = getEl('btnLogIn');
+  logInButton.addEventListener('click', () => {
+    let user = {login: getEl('login').value};
+    getEl('addRoom').style.display = 'block';
+    document.getElementsByClassName('modal-form')[0].style.visibility = 'hidden';
+    loadRoomsToLists(user);
+  })
+  function loadRoomsToLists(user){
+    fetch('/login', {
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      },
+      method : 'POST',
+      redirect: 'follow',
+      body: JSON.stringify(user)
+    }).then( (res) => {
+      console.log(res);
+      return res.json();
+    }).then((json) => {
+      console.log(json.user);
+      showHideGreeting('block', json.user.login);
+      getEl('menu').firstChild.id = json.user.login;
+      showHideLoginRegister('none');
+
+      let classNameString = getEl('cleaner').className;
+      let classNameArray = classNameString.split(' ');
+      if (classNameArray.length > 1) {
+        classNameArray[1] = json.user.cleanerColor;
+        getEl('cleaner').className = classNameArray.join(' ');
+      } else {
+        getEl('cleaner').className += ` ${json.user.cleanerColor}`;
+      }
+
+      let rooms = json.user.rooms;
+      console.log(rooms);
+      for (let i=0; i< rooms.length; i++){
+        addNewRoom(rooms[i].roomName, rooms[i].roomSquare, rooms[i].clean, rooms[i].wetClean, rooms[i].ionization);
+      }
     });
+  }
 
-    let logInButton = getEl('btnLogIn');
-    logInButton.addEventListener('click', () => {
-      let user = {login: getEl('login').value};
-      getEl('addRoom').style.display = 'block';
-      fetch('/login', {
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        },
-        method : 'POST',
-        redirect: 'follow',
-        body: JSON.stringify(user)
-      }).then( (res) => {
-        console.log(res);
-        return res.json();
-      }).then((json) => {
-        console.log(json.user);
-        removeLastChildFromDOM('content');
-        showHideGreeting('block', json.user.login);
-        getEl('menu').firstChild.id = json.user.login;
-        showHideLoginRegister('none');
-
-        let classNameString = getEl('cleaner').className;
-        let classNameArray = classNameString.split(' ');
-        if (classNameArray.length > 1) {
-          classNameArray[1] = json.user.cleanerColor;
-          getEl('cleaner').className = classNameArray.join(' ');
-        } else {
-          getEl('cleaner').className += ` ${json.user.cleanerColor}`;
-        }
-
-        let rooms = json.user.rooms;
-        console.log(rooms);
-        for (let i=0; i< rooms.length; i++){
-          addNewRoom(rooms[i].roomName, rooms[i].roomSquare, rooms[i].clean, rooms[i].wetClean, rooms[i].ionization);
-        }
-        document.getElementsByClassName('colors')[0].style.display = "block";
-      });
-
-    })
-
+  let cancelButton = getEl('cancel');
+  cancelButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    document.getElementsByClassName('modal-form')[0].style.visibility = 'hidden';
   });
 
   let logOutButton = getEl('logOut');
@@ -131,6 +101,7 @@ window.addEventListener('load', () => {
     getEl('cleaner').className = 'cleaner';
     getEl('menu').firstChild.id = '';
     getEl('addRoom').style.display = 'none';
+    clearRoomsList();
     getEl('changeRoomForm').style.display = 'none';
     document.getElementsByClassName('colors')[0].style.display = "none";
   });
@@ -145,17 +116,6 @@ window.addEventListener('load', () => {
   	newRoom.style.visibility = 'visible';
   	console.log('add new room');
   });
-  let closeAddRoom = getEl('closeNew');
-  closeAddRoom.addEventListener('click', () => {
-  	newRoom.style.visibility = 'hidden';
-  });
-
-  let closeChanges = getEl('closeChanges');
-  closeChanges.addEventListener('click', () => {
-    getEl('changeRoomForm').style.display = 'none';
-  });
-
-
 
 
   function showHideRooms(displayState){
@@ -223,7 +183,8 @@ window.addEventListener('load', () => {
 
 
   getEl('changeRoom').onclick = () => {
-    getEl('changeRoomForm').style.display = 'block';
+    //getEl('changeRoomForm').style.display = 'block';
+    document.getElementsByClassName('change-room-form')[0].style.visibility = 'visible';
   }
 /*************************************************** */
   getEl('deleteRoom').onclick = () => {
@@ -314,6 +275,7 @@ window.addEventListener('load', () => {
 
   function showHideGreeting(displayState, login){
     let greetingDiv = document.getElementsByClassName('greeting')[0];
+    console.log(greetingDiv);
     if (displayState !== 'none'){
       greetingDiv.firstChild.innerHTML = `Hello, ${login}`;
     }
@@ -355,4 +317,14 @@ window.addEventListener('load', () => {
     }
     return roomName;
   }
+
+  let closeButtons = document.getElementsByClassName('close-button');
+  for (let i=0; i<closeButtons.length; i++){
+    closeButtons[i].addEventListener('click',()=>{
+      closeButtons[i].parentNode.parentNode.style.visibility = 'hidden';
+    });
+  }
+
+
+
 })
