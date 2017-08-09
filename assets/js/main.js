@@ -235,8 +235,7 @@ window.addEventListener('load', () => {
      let roomName = checkbox[i].parentNode.parentNode.getAttribute('name');
      console.log(`'${roomName}'`);
 
-     fetch(`api/rooms/edit/cleanMod?login=${userLogin}&roomName=${roomName}
-       &nameOfCleaningMod=${nameOfCleaningMod}`, {
+     fetch(`api/rooms/edit/cleanMod?login=${userLogin}&roomName=${roomName}&nameOfCleaningMod=${nameOfCleaningMod}`, {
        headers: {
          'Accept': 'application/json',
          'Content-Type': 'application/json'
@@ -246,7 +245,7 @@ window.addEventListener('load', () => {
      }).then((res) => {
        return res.json();
      }).then((json) =>{
-
+        console.log(json.status)
      })
     }
     }
