@@ -35,7 +35,6 @@ window.addEventListener('load', () => {
   logInButton.addEventListener('click', () => {
     let user = {login: getEl('login').value};
     getEl('addRoom').style.display = 'block';
-    getEl();
     document.getElementsByClassName('modal-form')[0].style.visibility = 'hidden';
     document.getElementsByClassName('colors')[0].style.display = 'block';
     loadRoomsToLists(user, ()=>{
@@ -60,7 +59,6 @@ window.addEventListener('load', () => {
       redirect: 'follow',
       body: JSON.stringify(user)
     }).then( (res) => {
-      //console.log(res);
       return res.json();
     }).then((json) => {
       showHideGreeting('block', json.user.login);
@@ -76,8 +74,22 @@ window.addEventListener('load', () => {
         getEl('cleaner').className += ` ${json.user.cleanerColor}`;
       }
       let rooms = json.user.rooms;
+      console.log('=======================');
+      console.log(rooms);
+      console.log('=======================');
       for (let i=0; i< rooms.length; i++){
         addNewRoom(rooms[i].roomName, rooms[i].roomSquare, rooms[i].clean, rooms[i].wetClean, rooms[i].ionization);
+      }
+
+      for (let i=0; i<json.user.rooms.length; i++){
+        let time = 0;
+        for (property in json.user.rooms[i]){
+          if(typeof json.user.rooms[i][property] === 'boolean' && json.user.rooms[i][property] === true){
+            time += Number(json.user.rooms[i].roomSquare) * 5;
+          }
+        }
+        let totalTime = getEl('totalTime');
+        totalTime.innerHTML = Number(totalTime.innerHTML) + time;
       }
       callback();
     });
@@ -207,26 +219,20 @@ window.addEventListener('load', () => {
     li.setAttribute('name', roomName)
     li.innerHTML = `${roomName}<br>
     <label name="clean"><input class="check" type="checkbox" ${clean ? "checked" : "unchecked"}>Cleaning</label>
-    <label name="wetClean"><input class="check" type="checkbox" ${wetClean ? "checked" : "unchecked"}}>Wet Cleaning</label>
-    <label name="ionization"><input class="check" type="checkbox" ${ionization ? "checked" : "unchecked"}}>Ionization</label>`
+    <label name="wetClean"><input class="check" type="checkbox" ${wetClean ? "checked" : "unchecked"}>Wet Cleaning</label>
+    <label name="ionization"><input class="check" type="checkbox" ${ionization ? "checked" : "unchecked"}>Ionization</label>`
     getEl('roomList').appendChild(li);
 
     let option = document.createElement('option');
     option.innerHTML = `${roomName}`;
     getEl('listOfRooms').appendChild(option);
 
-    let time = 0;
+
     let checkbox = document.getElementsByClassName('check');
     for (let i=0; i < checkbox.length; i++){
-    checkbox[i].onchange = () => {
-    /* console.log('hello');
-      if (checkbox[i].checked === true) {
-        time += roomSquare*10;
-      }
-      if (checkbox[i].checked === false) {
-        time -= roomSquare*10;
-      }
-    console.log(time);*/
+
+     checkbox[i].onchange = () => {
+
 
      let userLogin = getUserLogin();
      let nameOfCleaningMod = checkbox[i].parentNode.getAttribute('name');
@@ -245,7 +251,13 @@ window.addEventListener('load', () => {
      }).then((res) => {
        return res.json();
      }).then((json) =>{
-        console.log(json.status)
+        console.log(json.room);
+        let totalTime = getEl('totalTime');
+        if (checkbox[i].checked){
+          totalTime.innerHTML = Number(totalTime.innerHTML) + json.room.roomSquare * 5;
+        } else {
+          totalTime.innerHTML = Number(totalTime.innerHTML) - json.room.roomSquare * 5
+        }
      })
     }
     }

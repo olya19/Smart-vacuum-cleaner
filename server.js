@@ -224,7 +224,9 @@ app.put('/api/rooms/edit/cleanMod', (req, res) => {
 
 
     rewriteJSONFile(usersArray, 'db/users.json', ()=>{
-      res.send({status:'success'});
+      res.send({room:usersArray[userIndex].rooms[roomIndex]});
+
+
     });
 
 })
