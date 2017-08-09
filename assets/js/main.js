@@ -114,7 +114,7 @@ window.addEventListener('load', () => {
     clearRoomsList();
     //getEl('changeRoomForm').style.display = 'none';
     document.getElementsByClassName('colors')[0].style.display = 'none';
-
+    getEl('totalTime').innerHTML = '0';
   });
 
   let newRoom = getEl('newRoom');
@@ -181,6 +181,23 @@ window.addEventListener('load', () => {
             addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
           }
           document.getElementsByClassName('change-room-form')[0].style.visibility = 'hidden';
+          console.log(json.rooms);
+          if (json.rooms.length !== 0){
+            totalTime.innerHTML = '0';
+            for (let i=0; i<json.rooms.length; i++){
+              let time = 0;
+              for (property in json.rooms[i]){
+                if(typeof json.rooms[i][property] === 'boolean' && json.rooms[i][property] === true){
+                  time += Number(json.rooms[i].roomSquare) * 5;
+                }
+              }
+              let totalTime = getEl('totalTime');
+              totalTime.innerHTML = Number(totalTime.innerHTML) + time;
+            }
+          } else {
+            totalTime.innerHTML = '0';
+          }
+
         }).catch(error => console.log('error:', error));;
     }
   }
