@@ -75,7 +75,7 @@ let newUser = {
 };
 
 
-console.log(newUser);
+//console.log(newUser);
 
 
 fs.readFile('db/users.json', 'utf8', (err, data) => {
@@ -93,7 +93,7 @@ fs.readFile('db/users.json', 'utf8', (err, data) => {
     rewriteJSONFile(usersArray, 'db/users.json');
     res.send({user: newUser});
   } else {
-    console.log(usersArray[indexUser]);
+    //console.log(usersArray[indexUser]);
     res.send({user:usersArray[indexUser]});
   }
 })
@@ -137,7 +137,7 @@ app.post('/api/saveRoom', (req, res) => {
         ionization: false
       };
       usersArray[userId].rooms.push(room);
-      console.log(usersArray[userId]);
+      //console.log(usersArray[userId]);
       res.send({status:'success'});
       rewriteJSONFile(usersArray, 'db/users.json');
   });
@@ -195,7 +195,42 @@ app.put('/api/rooms/edit', (req, res) => {
   })
 });
 
+app.put('/api/rooms/edit/cleanMod', (req, res) => {
+  fs.readFile('db/users.json', (err, data) => {
+    let usersArray = JSON.parse(data);
+    let userIndex = -1;
+    usersArray.find((element, index) => {
+      if(element.login === req.query.login){
+        //console.log(req.query.login);
+        userIndex = index;
+        return true;
+      }
+    })
 
+    let roomIndex;
+    usersArray[userIndex].rooms.find((element, index) => {
+      if (element.roomName === req.query.roomName){
+        //console.log(req.query.roomName);
+        roomIndex = index;
+        return true;
+      }
+    })
+    console.log(roomIndex);
+    let userRoom = usersArray[userIndex].rooms[roomIndex];
+    userRoom[req.query.nameOfCleaningMod] = req.body.cleaningModState;
+    console.log(userRoom);
+    console.log(`login: ${req.query.login} roomName: ${req.query.roomName} nameOfCleaningMod: ${req.query.nameOfCleaningMod}`);
+    usersArray[userIndex].rooms[roomIndex] = userRoom;
+
+
+    rewriteJSONFile(usersArray, 'db/users.json', ()=>{
+      res.send({room:usersArray[userIndex].rooms[roomIndex]});
+
+
+    });
+
+})
+})
 const server = app.listen(8080, () => {
    const host = server.address().address
    const port = server.address().port
@@ -213,10 +248,11 @@ function readJSONFile(filePath){
 
 }
 
-function rewriteJSONFile(object, filePath){
+function rewriteJSONFile(object, filePath, callback){
   fs.writeFile(filePath, JSON.stringify(object), (err) => {
     if (err) throw err;
     console.log('success save');
-    return true;
+    if (typeof callback !== 'undefined')
+      callback();
   });
 }

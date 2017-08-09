@@ -1,5 +1,6 @@
 window.addEventListener('load', () => {
-  showHideGreeting('none');
+
+   showHideGreeting('none');
 
     var colors = getEl('colors');
     colors.onchange = () => {
@@ -9,7 +10,6 @@ window.addEventListener('load', () => {
           color  = colors[i].value;
         }
       }
-
       fetch('/change-color', {
         headers: {
         'Accept': 'application/json',
@@ -22,26 +22,13 @@ window.addEventListener('load', () => {
       }).then( (json) => {
         rewriteDiv(json.newDiv);
       });
-
-
-  }
-  function createNode(htmlStr) {
-    let frag = document.createDocumentFragment(),
-    temp = document.createElement('div');
-    temp.innerHTML = htmlStr;
-    frag.appendChild(temp.firstChild);
-    return frag;
   }
 
-  let login = getEl("log-in");
   let register = getEl("register");
 
   register.addEventListener('click', (event) => {
     event.preventDefault();
-    console.log('register clicked');
     document.getElementsByClassName('modal-form')[0].style.visibility = 'visible';
-
-
   });
 
   let logInButton = getEl('btnLogIn');
@@ -49,9 +36,20 @@ window.addEventListener('load', () => {
     let user = {login: getEl('login').value};
     getEl('addRoom').style.display = 'block';
     document.getElementsByClassName('modal-form')[0].style.visibility = 'hidden';
-    loadRoomsToLists(user);
-  })
-  function loadRoomsToLists(user){
+    document.getElementsByClassName('colors')[0].style.display = 'block';
+    loadRoomsToLists(user, ()=>{
+      let olRoom = getEl('roomList');
+      if (olRoom.getElementsByTagName('li').length > 0){
+          getEl('anyRoom').style.display = 'none';
+          console.log('length:' + olRoom.getElementsByTagName('li').length);
+      } else {
+        getEl('anyRoom').style.display = 'block';
+      }
+    });
+
+  });
+
+  function loadRoomsToLists(user, callback){
     fetch('/login', {
       headers: {
       'Accept': 'application/json',
@@ -61,10 +59,8 @@ window.addEventListener('load', () => {
       redirect: 'follow',
       body: JSON.stringify(user)
     }).then( (res) => {
-      console.log(res);
       return res.json();
     }).then((json) => {
-      console.log(json.user);
       showHideGreeting('block', json.user.login);
       getEl('menu').firstChild.id = json.user.login;
       showHideLoginRegister('none');
@@ -77,13 +73,27 @@ window.addEventListener('load', () => {
       } else {
         getEl('cleaner').className += ` ${json.user.cleanerColor}`;
       }
-
       let rooms = json.user.rooms;
+      console.log('=======================');
       console.log(rooms);
+      console.log('=======================');
       for (let i=0; i< rooms.length; i++){
         addNewRoom(rooms[i].roomName, rooms[i].roomSquare, rooms[i].clean, rooms[i].wetClean, rooms[i].ionization);
       }
+
+      for (let i=0; i<json.user.rooms.length; i++){
+        let time = 0;
+        for (property in json.user.rooms[i]){
+          if(typeof json.user.rooms[i][property] === 'boolean' && json.user.rooms[i][property] === true){
+            time += Number(json.user.rooms[i].roomSquare) * 5;
+          }
+        }
+        let totalTime = getEl('totalTime');
+        totalTime.innerHTML = Number(totalTime.innerHTML) + time;
+      }
+      callback();
     });
+
   }
 
   let cancelButton = getEl('cancel');
@@ -103,25 +113,161 @@ window.addEventListener('load', () => {
     getEl('addRoom').style.display = 'none';
     clearRoomsList();
     getEl('changeRoomForm').style.display = 'none';
-    document.getElementsByClassName('colors')[0].style.display = "none";
-  });
+    document.getElementsByClassName('colors')[0].style.display = 'none';
 
-  function removeLastChildFromDOM(idDOMElement){
-    getEl(idDOMElement).removeChild(getEl(idDOMElement).lastChild);
-  }
+  });
 
   let newRoom = getEl('newRoom');
   let addRoom = getEl('addRoom');
   addRoom.addEventListener('click', () => {
   	newRoom.style.visibility = 'visible';
-  	console.log('add new room');
   });
 
+  let saveBtnRoom =  getEl('saveRoom');
+  saveBtnRoom.addEventListener('click', () => {
+    let roomName = getEl('roomName').value;
+    let roomSquare = getEl('roomSquare').value;
+    let login = getUserLogin();
+    if (roomName === '' || roomSquare ===''){
+      alert('Please, enter name and square');
+     return;
+    }
+    let newRoomObj = {
+      'roomName': roomName,
+      'roomSquare': roomSquare,
+      'login': login
+    };
+    fetch('api/saveRoom', {
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+      },
+      method : 'POST',
+      body: JSON.stringify(newRoomObj)
+    }).then((res) => {
+      //console.log(res);
+      return res.json();
+    }).then( (json) => {
+      //console.log(json);
+      if(json.status === 'success') {
+        newRoom.style.visibility = 'hidden';
+        getEl('anyRoom').style.display = 'none';
+      }
+    });
+   addNewRoom(roomName, roomSquare);
+  });
 
-  function showHideRooms(displayState){
-    getEl('rooms').style.display = displayState;
-    getEl('addRoom').style.display = displayState;
-    getEl('changeRoom').style.display = displayState;
+  getEl('changeRoom').onclick = () => {
+    document.getElementsByClassName('change-room-form')[0].style.visibility = 'visible';
+  }
+
+  getEl('deleteRoom').onclick = () => {
+    let roomName = getRoomNameForChanges();
+    if (confirm(`Do you really want to delete ${roomName}?`)){
+        let userLogin = getUserLogin();
+        //console.log(roomName);
+        fetch(`api/rooms/delete?login=${userLogin}&roomName=${roomName}`, {
+          headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+          },
+          method : 'DELETE'
+        }).then((res) => {
+          //console.log(res);
+          return res.json();
+        }).then((json)=>{
+          clearRoomsList();
+          for (let i=0; i< json.rooms.length; i++){
+            addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
+          }
+          document.getElementsByClassName('change-room-form')[0].style.visibility = 'hidden';
+        }).catch(error => console.log('error:', error));;
+    }
+  }
+
+  getEl('saveRoomChanges').onclick = () => {
+   let newRoomName = getEl('changeNameField').value;
+   if (newRoomName !== ''){
+    let roomName = getRoomNameForChanges();
+    let userLogin = getUserLogin();
+      console.log(`${roomName} becomes ${newRoomName}`);
+    fetch(`api/rooms/edit?login=${userLogin}&roomName=${roomName}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        method : 'PUT',
+        body: JSON.stringify({"newRoomName":newRoomName})
+      }).then((res) => {
+      //console.log(res);
+        return res.json();
+      }).then((json)=>{
+         console.log(json.rooms, 'response from server');
+         clearRoomsList();
+         for (let i=0; i< json.rooms.length; i++){
+            addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
+          }
+        document.getElementsByClassName('change-room-form')[0].style.visibility = 'hidden';
+        getEl('changeNameField').value = '';
+       }).catch(error => console.log('error:', error));
+    }
+    else alert('You have not did any changes');
+  }
+
+  function addNewRoom(roomName, roomSquare,clean, wetClean, ionization){
+    let li = document.createElement('li');
+    li.setAttribute('name', roomName)
+    li.innerHTML = `${roomName}<br>
+    <label name="clean"><input class="check" type="checkbox" ${clean ? "checked" : "unchecked"}>Cleaning</label>
+    <label name="wetClean"><input class="check" type="checkbox" ${wetClean ? "checked" : "unchecked"}>Wet Cleaning</label>
+    <label name="ionization"><input class="check" type="checkbox" ${ionization ? "checked" : "unchecked"}>Ionization</label>`
+    getEl('roomList').appendChild(li);
+
+    let option = document.createElement('option');
+    option.innerHTML = `${roomName}`;
+    getEl('listOfRooms').appendChild(option);
+
+
+    let checkbox = document.getElementsByClassName('check');
+    for (let i=0; i < checkbox.length; i++){
+
+     checkbox[i].onchange = () => {
+
+
+     let userLogin = getUserLogin();
+     let nameOfCleaningMod = checkbox[i].parentNode.getAttribute('name');
+     console.log(nameOfCleaningMod);
+     let cleaningModState = checkbox[i].checked;
+     let roomName = checkbox[i].parentNode.parentNode.getAttribute('name');
+     console.log(`'${roomName}'`);
+
+     fetch(`api/rooms/edit/cleanMod?login=${userLogin}&roomName=${roomName}&nameOfCleaningMod=${nameOfCleaningMod}`, {
+       headers: {
+         'Accept': 'application/json',
+         'Content-Type': 'application/json'
+         },
+         method : 'PUT',
+         body: JSON.stringify({'cleaningModState':cleaningModState})
+     }).then((res) => {
+       return res.json();
+     }).then((json) =>{
+        console.log(json.room);
+        let totalTime = getEl('totalTime');
+        if (checkbox[i].checked){
+          totalTime.innerHTML = Number(totalTime.innerHTML) + json.room.roomSquare * 5;
+        } else {
+          totalTime.innerHTML = Number(totalTime.innerHTML) - json.room.roomSquare * 5
+        }
+     })
+    }
+    }
+  }
+
+  let closeButtons = document.getElementsByClassName('close-button');
+  for (let i=0; i<closeButtons.length; i++){
+    closeButtons[i].addEventListener('click',()=>{
+      closeButtons[i].parentNode.parentNode.style.visibility = 'hidden';
+    });
   }
 
   function showHideLoginRegister(displayState){
@@ -144,138 +290,19 @@ window.addEventListener('load', () => {
     return getEl('menu').firstChild.id;
   }
 
-  let saveBtnRoom =  getEl('saveRoom');
-  saveBtnRoom.addEventListener('click', () => {
-    let roomName = getEl('roomName').value;
-    let roomSquare = getEl('roomSquare').value;
-    let login = getUserLogin();
-    if (roomName === '' || roomSquare ===''){
-      alert('Please, enter name and square');
-     return;
-    }
-
-
-    let newRoomObj = {
-      'roomName': roomName,
-      'roomSquare': roomSquare,
-      'login': login
-    };
-    fetch('api/saveRoom', {
-      headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-      },
-      method : 'POST',
-      body: JSON.stringify(newRoomObj)
-    }).then((res) => {
-      console.log(res);
-      return res.json();
-    }).then( (json) => {
-      console.log(json);
-      if(json.status === 'success') {
-        newRoom.style.visibility = 'hidden';
-        getEl('anyRoom').style.display = 'none';
+  function getRoomNameForChanges (){
+    let rooms = getEl('listOfRooms');
+    let roomName;
+    for (let i = 0; i < rooms.length; i++){
+      if (rooms[i].selected) {
+        roomName = rooms[i].value;
       }
-    });
-
-  addNewRoom(roomName, roomSquare);
-});
-
-
-  getEl('changeRoom').onclick = () => {
-    //getEl('changeRoomForm').style.display = 'block';
-    document.getElementsByClassName('change-room-form')[0].style.visibility = 'visible';
-  }
-/*************************************************** */
-  getEl('deleteRoom').onclick = () => {
-    let roomName = getRoomNameForChanges();
-    if (confirm(`Do you really want to delete ${roomName}?`)){
-        let userLogin = getUserLogin();
-        console.log(roomName);
-        fetch(`api/rooms/delete?login=${userLogin}&roomName=${roomName}`, {
-          headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-          },
-          method : 'DELETE',
-          //body: JSON.stringify({login:userLogin, "roomName":roomName})
-        }).then((res) => {
-          console.log(res);
-          return res.json();
-        }).then((json)=>{
-          console.log(json.rooms, 'response from server');
-          clearRoomsList();
-
-          for (let i=0; i< json.rooms.length; i++){
-            addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
-          }
-          getEl('changeRoomForm').style.display = 'none';
-        }).catch(error => console.log('error:', error));;
     }
-  }
-  /********************************************************************************/
-  getEl('saveRoomChanges').onclick = () => {
-   let newRoomName = getEl('changeNameField').value;
-   if (newRoomName !== ''){
-    let roomName = getRoomNameForChanges();
-    let userLogin = getUserLogin();
-      console.log(`${roomName} becomes ${newRoomName}`);
-    fetch(`api/rooms/edit?login=${userLogin}&roomName=${roomName}`, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        },
-        method : 'PUT',
-        body: JSON.stringify({"newRoomName":newRoomName})
-      }).then((res) => {
-      console.log(res);
-        return res.json();
-      }).then((json)=>{
-         console.log(json.rooms, 'response from server');
-
-        clearRoomsList();
-
-         for (let i=0; i< json.rooms.length; i++){
-            addNewRoom(json.rooms[i].roomName, json.rooms[i].roomSquare, json.rooms[i].clean, json.rooms[i].wetClean, json.rooms[i].ionization);
-          }
-
-        getEl('changeRoomForm').style.display = 'none';
-        getEl('changeNameField').value = '';
-       }).catch(error => console.log('error:', error));
-    }
-    else alert('You have not did any changes');
-  }
-
-  function addNewRoom(roomName, roomSquare,clean, wetClean, ionization){
-    let li = document.createElement('li');
-    li.innerHTML = `${roomName}<br>Cleaning<input class="check" type="checkbox"}>
-    Wet Cleaning<input class="check" type="checkbox"}>
-    Ionization<input class="check" type="checkbox"}>`
-    getEl('roomList').appendChild(li);
-
-    let option = document.createElement('option');
-    option.innerHTML = `${roomName}`;
-    getEl('listOfRooms').appendChild(option);
-
-    let time = 0;
-    let checkbox = document.getElementsByClassName('check');
-    for (let i=0; i < checkbox.length; i++){
-    checkbox[i].onchange = () => {
-      console.log('hello');
-      if (checkbox[i].checked === true) {
-        time += roomSquare*10;
-      }
-      if (checkbox[i].checked === false) {
-        time -= roomSquare*10;
-      }
-    console.log(time);
-    }
-    }
+    return roomName;
   }
 
   function showHideGreeting(displayState, login){
     let greetingDiv = document.getElementsByClassName('greeting')[0];
-    console.log(greetingDiv);
     if (displayState !== 'none'){
       greetingDiv.firstChild.innerHTML = `Hello, ${login}`;
     }
@@ -283,48 +310,36 @@ window.addEventListener('load', () => {
     showHideRooms(displayState);
   }
 
-
-    function showHideElement(displayState, element){
+  function showHideElement(displayState, element){
       element.style.display = displayState;
-    }
-
-
-    function clearRoomsList(){
-
-      let roomList = getEl('roomList');
-
-      while(roomList.firstChild !== null){
-        roomList.removeChild(roomList.firstChild);
-      }
-
-      let listOfRooms = getEl('listOfRooms');
-       while(listOfRooms.firstChild !== null){
-        listOfRooms.removeChild(listOfRooms.firstChild);
-      }
-      let option = document.createElement('option');
-      option.value = 'empty';
-      option.innerHTML = 'Choose the room';
-      listOfRooms.appendChild(option);
-    }
-
-  function getRoomNameForChanges (){
-    let rooms = getEl('listOfRooms');
-    let roomName;
-      for (let i = 0; i < rooms.length; i++){
-        if (rooms[i].selected) {
-          roomName = rooms[i].value;
-      }
-    }
-    return roomName;
   }
 
-  let closeButtons = document.getElementsByClassName('close-button');
-  for (let i=0; i<closeButtons.length; i++){
-    closeButtons[i].addEventListener('click',()=>{
-      closeButtons[i].parentNode.parentNode.style.visibility = 'hidden';
-    });
+  function clearRoomsList(){
+    let roomList = getEl('roomList');
+    while(roomList.firstChild !== null){
+      roomList.removeChild(roomList.firstChild);
+    }
+    let listOfRooms = getEl('listOfRooms');
+     while(listOfRooms.firstChild !== null){
+      listOfRooms.removeChild(listOfRooms.firstChild);
+    }
+    let option = document.createElement('option');
+    option.value = 'empty';
+    option.innerHTML = 'Choose the room';
+    listOfRooms.appendChild(option);
   }
 
+  function showHideRooms(displayState){
+    getEl('rooms').style.display = displayState;
+    getEl('addRoom').style.display = displayState;
+    getEl('changeRoom').style.display = displayState;
+  }
 
-
+  function createNode(htmlStr) {
+    let frag = document.createDocumentFragment(),
+    temp = document.createElement('div');
+    temp.innerHTML = htmlStr;
+    frag.appendChild(temp.firstChild);
+    return frag;
+  }
 })
