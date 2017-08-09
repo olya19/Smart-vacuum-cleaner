@@ -252,7 +252,7 @@ function rewriteJSONFile(object, filePath, callback){
   fs.writeFile(filePath, JSON.stringify(object), (err) => {
     if (err) throw err;
     console.log('success save');
-
-    callback();
+    if (typeof callback !== 'undefined')
+      callback();
   });
 }
