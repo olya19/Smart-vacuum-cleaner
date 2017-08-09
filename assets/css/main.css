@@ -1,17 +1,17 @@
-body{
+body {
   height: 99vh;
   width: 99vw;
   background-color: rgb(252, 255, 221);
   font-size: 16px;
 }
 
-.content{
+.content {
   width: 100%;
   height: 100%;
   display: flex;
 }
 
-.cleaner{
+.cleaner {
   width: 70%;
   background: url("../img/cleaner.png") center center no-repeat;
   background-size: contain;
@@ -19,76 +19,75 @@ body{
   padding: 50px 0 50px 50px;
 }
 
-.cleaner img{
+.cleaner img {
   width: 50%;
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
-.menu{
+.menu {
   width: 30%;
   background-color: rgb(191, 191, 191);
 }
 
-.red-cleaner{
+.red-cleaner {
   background: url("../img/bg-red.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
-
 }
 
-.blue-cleaner{
+.blue-cleaner {
   background: url("../img/bg-blue.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
 }
 
-.green-cleaner{
+.green-cleaner {
   background: url("../img/bg-green.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
 }
-.gold-cleaner{
+
+.gold-cleaner {
   background: url("../img/bg-orange.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
 }
 
-.pink-cleaner{
+.pink-cleaner {
   background: url("../img/bg-pink.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
 }
 
-.purple-cleaner{
+.purple-cleaner {
   background: url("../img/bg-purple.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
 }
 
-.turquoise-cleaner{
+.turquoise-cleaner {
   background: url("../img/bg-turquoise.png") center center no-repeat, url("../img/cleaner.png") center center no-repeat;
   background-size: contain, contain;
 }
 
-.on-off-button-area{
+.on-off-button-area {
   width: 100%;
 }
 
-.on-off-button{
-    display: inline-block;
-
+.on-off-button {
+  display: inline-block;
   width: 30px;
   height: 30px;
   border-radius: 50%;
 }
 
-.cleaner-off{
+.cleaner-off {
   background: url("../img/on-off-button.png") center center no-repeat, linear-gradient(rgb(245, 107, 86), rgb(255, 0, 0));
-    background-size: contain;
-}
-
-.cleaner-on{
-background: url("../img/on-off-button.png") center center no-repeat, linear-gradient(rgb(86, 197, 245), rgb(0, 164, 200));
   background-size: contain;
 }
 
-.registration input{
+.cleaner-on {
+  background: url("../img/on-off-button.png") center center no-repeat, linear-gradient(rgb(86, 197, 245), rgb(0, 164, 200));
+  background-size: contain;
+}
+
+.registration input {
   display: block;
   width: 80%;
   margin: 10px auto;
@@ -97,33 +96,39 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   border-radius: 4px;
 }
 
-.modal-form, .change-room-form{
+.modal-form, .change-room-form {
   width: 100%;
   height: 100%;
   position: absolute;
-  top:0;
+  top: 0;
   background-color: rgba(0, 0, 0, 0.49);
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.modal-form, .change-room-form{
-    visibility: hidden;
+
+.modal-form, .change-room-form {
+  visibility: hidden;
 }
 
-
-.form-reg, .change-room-form form{
+.form-reg, .change-room-form form {
   width: 40%;
   height: 50%;
   display: block;
-  background-color:  rgb(252, 255, 221);
+  background-color: rgb(252, 255, 221);
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.form-reg input, .change-room-form form input{
+.change-room-form form select {
+  width: 80%;
+  height: 30px;
+  margin: 0 auto;
+}
+
+.form-reg input, .change-room-form form input {
   display: block;
   width: 80%;
   margin: 10px auto;
@@ -132,44 +137,53 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   border-radius: 4px;
 }
 
-.form-reg label{
+.form-reg label {
   text-align: center;
 }
 
-.form-reg input[type="button"], .new-room input[type="button"],
-.new-room input[type="reset"]{
+.form-reg input[type="button"], .change-room-form form input[type="button"], .new-room input[type="button"], .new-room input[type="reset"] {
   width: 50%;
 }
 
-.cancel{
+.change-room-form form h2 {
+  align-self: center;
+}
+
+
+}
+
+#deleteRoom {
+  margin-bottom: 20px;
+}
+.cancel {
   background-color: transparent;
   border: none;
 }
-.cancel:active, .cancel:focus{
-  outline:0 none;
+.cancel:active, .cancel:focus {
+  outline: 0 none;
 }
+
 /******************************/
 .new-room {
   visibility: hidden;
-  position:absolute;
+  position: absolute;
   width: 100%;
   height: 100%;
   display: block;
-  background-color: rgba(0,0,0, .3);
+  background-color: rgba(0, 0, 0, .3);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.new-room form,  .change-room-form form{
+.new-room form, .change-room-form form {
   width: 40%;
   height: 50%;
-  background-color:  rgb(252, 255, 221);
+  background-color: rgb(252, 255, 221);
   margin: 0 auto;
-    border-radius: 4px;
+  border-radius: 4px;
 }
-
-.new-room form input{
+.new-room form input {
   width: 80%;
   height: 50px;
   border: 1px solid grey;
@@ -177,110 +191,113 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
   display: block;
   margin: 15px auto;
 }
-.new-room form h2{
+.new-room form h2 {
   text-align: center;
 }
-.close-button{
+.close-button {
   align-self: flex-end;
 }
-
 h2 {
   font-size: 24px;
 }
-
 .rooms {
-	border: 1px solid grey;
- width: 100%;
- padding: 0px 20px;
- margin-top: 30px;
-}
-
-.close-button {
-    float:right;
-    display:inline-block;
-    position: relative;
-    padding:2px 5px;
-    background:#ccc;
-}
-
-.close-button:hover{
-    color:#fff;
-}
-
-.greeting{
+  border: 1px solid grey;
   width: 100%;
-  background-color: rgba(0, 0,0, .3);
+  padding: 0px 20px;
+  margin-top: 30px;
+}
+.close-button {
+  float: right;
+  display: inline-block;
+  position: relative;
+  padding: 2px 5px;
+  background: #ccc;
+}
+.close-button:hover {
+  color: #fff;
+}
+.greeting {
+  width: 100%;
+  background-color: rgba(0, 0, 0, .3);
   padding: 20px 0;
 }
-
-.menu h2{
+.menu h2 {
   text-align: center;
 }
-
-.greeting h2, .greeting p{
+.greeting h2, .greeting p {
   text-align: right;
   padding: 0 20px 0 0;
 }
-
-.colors{
+.colors {
   width: 100%;
   padding: 0 20px;
   display: none;
 }
-.colors form{
+.colors form {
   display: block;
   margin: 0 auto;
 }
-
-.colors form select{
+.colors form select {
   width: 100%;
 }
-
-.button{
+.button {
   border: 1px solid grey;
   border-radius: 4px;
   margin: 20px auto;
-  background-color:  rgb(252, 255, 221);
+  background-color: rgb(252, 255, 221);
   width: 50%;
   height: 40px;
 }
 
-.start-page p{
+.button:hover{
+  background-color:rgb(255, 254, 116);
+}
+
+.start-page p {
   padding: 20px;
   text-align: justify;
 }
-
-h1{
+h1 {
   margin-top: 30px;
   font-size: 36px;
   text-align: center;
 }
-
 a {
-  color:blueviolet;
+  color: blueviolet;
   text-decoration: none;
 }
-
 a:hover {
-  color:whitesmoke;
+  color: whitesmoke;
 }
-
-a#register, .greeting h2{
+a#register, .greeting h2 {
   font-size: 30px;
 }
-
-.start-page h1, a#register  {
+.start-page h1, a#register {
   animation: Font;
   -webkit-animation: Font 5s infinite alternate;
 }
-
 @keyframes Font {
-    0% {color: purple;}
-    20% {color: blueviolet;}
-    40% {color: cornflowerblue;}
-    60% {color: darkorchid;}
-    80% {color: darkmagenta;}
-    100% {color: fuchsia}
+  0% {
+    color: purple;
+  }
+
+  20% {
+    color: blueviolet;
+  }
+
+  40% {
+    color: cornflowerblue;
+  }
+
+  60% {
+    color: darkorchid;
+  }
+
+  80% {
+    color: darkmagenta;
+  }
+
+  100% {
+    color: fuchsia
+  }
 }
-
-

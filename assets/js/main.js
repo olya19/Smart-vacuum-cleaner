@@ -112,7 +112,7 @@ window.addEventListener('load', () => {
     getEl('menu').firstChild.id = '';
     getEl('addRoom').style.display = 'none';
     clearRoomsList();
-    getEl('changeRoomForm').style.display = 'none';
+    //getEl('changeRoomForm').style.display = 'none';
     document.getElementsByClassName('colors')[0].style.display = 'none';
 
   });
