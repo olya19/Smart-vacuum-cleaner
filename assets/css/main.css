@@ -1,6 +1,6 @@
 body{
-  height: 100vh;
-  width: 100vw;
+  height: 99vh;
+  width: 99vw;
   background-color: rgb(252, 255, 221);
   font-size: 16px;
 }
@@ -164,7 +164,7 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
 .new-room form,  .change-room-form form{
   width: 40%;
   height: 50%;
-  background-color:  rgb(252, 255, 221));
+  background-color:  rgb(252, 255, 221);
   margin: 0 auto;
     border-radius: 4px;
 }
@@ -185,13 +185,13 @@ background: url("../img/on-off-button.png") center center no-repeat, linear-grad
 }
 
 h2 {
-	font-size: 24px;
+  font-size: 24px;
 }
 
 .rooms {
-	border: 1px solid grey;'
+	border: 1px solid grey;
  width: 100%;
- padding: 0 20px;
+ padding: 0px 20px;
  margin-top: 30px;
 }
 
@@ -213,12 +213,13 @@ h2 {
   padding: 20px 0;
 }
 
-.greeting h3, .greeting p{
-  text-align: right;
-  padding: 0 20px 0 0;
-}
 .menu h2{
   text-align: center;
+}
+
+.greeting h2, .greeting p{
+  text-align: right;
+  padding: 0 20px 0 0;
 }
 
 .colors{
@@ -249,13 +250,37 @@ h2 {
   text-align: justify;
 }
 
-.start-page h1{
-  font-size: 32px;
-  color: rgb(88, 33, 126);
+h1{
+  margin-top: 30px;
+  font-size: 36px;
   text-align: center;
 }
 
-a{
+a {
+  color:blueviolet;
   text-decoration: none;
-  color: rgb(64, 0, 115);
 }
+
+a:hover {
+  color:whitesmoke;
+}
+
+a#register, .greeting h2{
+  font-size: 30px;
+}
+
+.start-page h1, a#register  {
+  animation: Font;
+  -webkit-animation: Font 5s infinite alternate;
+}
+
+@keyframes Font {
+    0% {color: purple;}
+    20% {color: blueviolet;}
+    40% {color: cornflowerblue;}
+    60% {color: darkorchid;}
+    80% {color: darkmagenta;}
+    100% {color: fuchsia}
+}
+
+
