@@ -112,7 +112,6 @@ window.addEventListener('load', () => {
     getEl('menu').firstChild.id = '';
     getEl('addRoom').style.display = 'none';
     clearRoomsList();
-    //getEl('changeRoomForm').style.display = 'none';
     document.getElementsByClassName('colors')[0].style.display = 'none';
     getEl('totalTime').innerHTML = '0';
   });
@@ -145,10 +144,8 @@ window.addEventListener('load', () => {
       method : 'POST',
       body: JSON.stringify(newRoomObj)
     }).then((res) => {
-      //console.log(res);
       return res.json();
     }).then( (json) => {
-      //console.log(json);
       if(json.status === 'success') {
         newRoom.style.visibility = 'hidden';
         getEl('anyRoom').style.display = 'none';
@@ -165,7 +162,6 @@ window.addEventListener('load', () => {
     let roomName = getRoomNameForChanges();
     if (confirm(`Do you really want to delete ${roomName}?`)){
         let userLogin = getUserLogin();
-        //console.log(roomName);
         fetch(`api/rooms/delete?login=${userLogin}&roomName=${roomName}`, {
           headers: {
           'Accept': 'application/json',
@@ -173,7 +169,6 @@ window.addEventListener('load', () => {
           },
           method : 'DELETE'
         }).then((res) => {
-          //console.log(res);
           return res.json();
         }).then((json)=>{
           clearRoomsList();
@@ -239,18 +234,12 @@ window.addEventListener('load', () => {
     <label name="wetClean"><input class="check" type="checkbox" ${wetClean ? "checked" : "unchecked"}>Wet Cleaning</label>
     <label name="ionization"><input class="check" type="checkbox" ${ionization ? "checked" : "unchecked"}>Ionization</label>`
     getEl('roomList').appendChild(li);
-
     let option = document.createElement('option');
     option.innerHTML = `${roomName}`;
     getEl('listOfRooms').appendChild(option);
-
-
     let checkbox = document.getElementsByClassName('check');
     for (let i=0; i < checkbox.length; i++){
-
      checkbox[i].onchange = () => {
-
-
      let userLogin = getUserLogin();
      let nameOfCleaningMod = checkbox[i].parentNode.getAttribute('name');
      console.log(nameOfCleaningMod);

@@ -7,23 +7,18 @@ let fs = require('fs');
 
 const app = express();
 
-
 app.use(express.static('assets'));
 app.use(express.static('db'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.set('view engine', 'jade');
 
 app.get('/', (req, res) => {
-
   console.log(`${req.method} ${res.statusCode} ${req.url}`); //added method & StatusCode
     res.render('index');
-
 });
 
 app.get('/assets/*', (req, res) => {
-
    res.sendFile(path.join(__dirname + req.path));
 });
 
@@ -31,9 +26,6 @@ app.post('/change-color', (req, res) => {
   console.log(req.body.colorName);
   console.log(req.body.login);
   let color = req.body.colorName.toString();
-
-
-
   let className;
 
   switch (color) {
@@ -59,9 +51,6 @@ app.post('/change-color', (req, res) => {
       usersArray[indexUser].cleanerColor = className;
     rewriteJSONFile(usersArray, 'db/users.json');
     });
-
-
-
   res.send({newDiv: getNewDiv(className)});
 });
 
@@ -74,10 +63,6 @@ let newUser = {
   rooms: []
 };
 
-
-//console.log(newUser);
-
-
 fs.readFile('db/users.json', 'utf8', (err, data) => {
   let usersArray = JSON.parse(data);
   let indexUser = -1;
@@ -85,7 +70,7 @@ fs.readFile('db/users.json', 'utf8', (err, data) => {
       if (element.login === newUser.login){
         indexUser = index;
         return true;
-    }
+      }
     });
 
   if(indexUser === -1){
@@ -93,7 +78,6 @@ fs.readFile('db/users.json', 'utf8', (err, data) => {
     rewriteJSONFile(usersArray, 'db/users.json');
     res.send({user: newUser});
   } else {
-    //console.log(usersArray[indexUser]);
     res.send({user:usersArray[indexUser]});
   }
 })
@@ -141,8 +125,6 @@ app.post('/api/saveRoom', (req, res) => {
       res.send({status:'success'});
       rewriteJSONFile(usersArray, 'db/users.json');
   });
-
-
 });
 
 app.delete('/api/rooms/delete', (req, res) => {
@@ -201,7 +183,6 @@ app.put('/api/rooms/edit/cleanMod', (req, res) => {
     let userIndex = -1;
     usersArray.find((element, index) => {
       if(element.login === req.query.login){
-        //console.log(req.query.login);
         userIndex = index;
         return true;
       }
@@ -210,7 +191,6 @@ app.put('/api/rooms/edit/cleanMod', (req, res) => {
     let roomIndex;
     usersArray[userIndex].rooms.find((element, index) => {
       if (element.roomName === req.query.roomName){
-        //console.log(req.query.roomName);
         roomIndex = index;
         return true;
       }
@@ -221,16 +201,12 @@ app.put('/api/rooms/edit/cleanMod', (req, res) => {
     console.log(userRoom);
     console.log(`login: ${req.query.login} roomName: ${req.query.roomName} nameOfCleaningMod: ${req.query.nameOfCleaningMod}`);
     usersArray[userIndex].rooms[roomIndex] = userRoom;
-
-
     rewriteJSONFile(usersArray, 'db/users.json', ()=>{
       res.send({room:usersArray[userIndex].rooms[roomIndex]});
-
-
     });
+})
+})
 
-})
-})
 const server = app.listen(8080, () => {
    const host = server.address().address
    const port = server.address().port
@@ -242,10 +218,8 @@ function getNewDiv(className){
 }
 
 function readJSONFile(filePath){
-
   let dataFromFile = fs.readFile(filePath, 'utf8');
   return JSON.parse(dataFromFile);
-
 }
 
 function rewriteJSONFile(object, filePath, callback){
